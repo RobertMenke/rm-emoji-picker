@@ -2,7 +2,7 @@ import EmojiConvertor from "./../../non_npm_dependencies/iamcal_js_emoji/lib/emo
 
 "use strict";
 
-export default class Converters {
+class Converters {
 
     /**
      *
@@ -49,6 +49,16 @@ export default class Converters {
     }
 
     /**
+     * Tells us whether or not the environment can support
+     * unicode emojis.
+     *
+     * @returns {boolean}
+     */
+    canSupportUnified () {
+        return this.env.replace_mode === "unified";
+    }
+
+    /**
      * Getter for unified converter
      *
      * @returns {emoji}
@@ -82,3 +92,6 @@ export default class Converters {
         return converter;
     }
 }
+
+//Export as a singleton
+export default new Converters();

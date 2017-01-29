@@ -1,0 +1,116 @@
+$hover_underline : #4DB6AC; //teal
+$background_secondary : #F5F5F5;
+$background_primary : #FFFFFF;
+$width : 250px;
+$content_height : 300px;
+
+.emoji-picker {
+  position      : absolute;
+  display       : block;
+  border-radius : 5px;
+  background    : $background_primary;
+}
+
+.emoji-section {
+  position : relative;
+  display  : block;
+}
+
+.emoji-picker > .emoji-header {
+  height                          : 20px;
+  -webkit-border-top-left-radius  : 5px;
+  -webkit-border-top-right-radius : 5px;
+  -moz-border-radius-topleft      : 5px;
+  -moz-border-radius-topright     : 5px;
+  border-top-left-radius          : 5px;
+  border-top-right-radius         : 5px;
+  background                      : $background_secondary;
+}
+
+.emoji-header > .select-category {
+  position       : relative;
+  display        : inline-block;
+  vertical-align : top;
+  line-height    : 20px;
+  text-align     : center;
+  color          : #616161;
+}
+
+.select-category:hover {
+  cursor : pointer;
+}
+
+.select-category:after {
+  position           : absolute;
+  display            : block;
+  content            : "";
+  visibility         : hidden;
+  height             : 0;
+  opacity            : 0.5;
+  width              : 100%;
+  -webkit-transition : height 0.2s ease, opacity 0.2s ease;
+  -moz-transition    : height 0.2s ease, opacity 0.2s ease;
+  -ms-transition     : height 0.2s ease, opacity 0.2s ease;
+  -o-transition      : height 0.2s ease, opacity 0.2s ease;
+  transition         : height 0.2s ease, opacity 0.2s ease;
+}
+
+.select-category:after:hover {
+  height  : 3px;
+  opacity : 1.0;
+}
+
+.emoji-search {
+  height  : 20px;
+  padding : 10px;
+}
+
+.emoji-search > .search-wrapper {
+  height                : 20px;
+  width                 : 100%;
+  color                 : #000000;
+  border                : 1px solid #EEEEEE;
+  -webkit-border-radius : 4px;
+  -moz-border-radius    : 4px;
+  border-radius         : 4px;
+}
+
+.search-emojis {
+  width                 : 100%;
+  height                : 100%;
+  display               : block;
+  position              : relative;
+  -webkit-border-radius : 4px;
+  -moz-border-radius    : 4px;
+  border-radius         : 4px;
+  outline               : none;
+}
+
+.emoji-title-overlay {
+  height     : 20px;
+  background : #FFFFFF;
+  opacity    : 0.9;
+}
+
+.emoji-title-overlay > #active-title {
+  line-height : 20px;
+  margin-left : 5px;
+}
+
+.emoji-content {
+  height     : 300px;
+  width      : 250px;
+  background : $background_primary;
+}
+
+.emoji-footer {
+  height     : 120px;
+  background : $background_secondary;
+}
+
+.emoji-wrapper {
+  position : relative;
+  display  : inline-block;
+  width    : calc(100% / 8);
+}
+

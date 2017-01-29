@@ -1,5 +1,5 @@
 export default {
-  "emojis" : [
+  "Symbols" : [
     {
       "has_img_apple"   : true,
       "has_img_google"  : true,
@@ -3097,114 +3097,114 @@ export default {
       ],
       "sort_order"      : 134
     },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 1",
-      "short_name"      : "one",
-      "short_names"     : [
-        "one"
-      ],
-      "sort_order"      : 135
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 2",
-      "short_name"      : "two",
-      "short_names"     : [
-        "two"
-      ],
-      "sort_order"      : 136
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 3",
-      "short_name"      : "three",
-      "short_names"     : [
-        "three"
-      ],
-      "sort_order"      : 137
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 4",
-      "short_name"      : "four",
-      "short_names"     : [
-        "four"
-      ],
-      "sort_order"      : 138
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 5",
-      "short_name"      : "five",
-      "short_names"     : [
-        "five"
-      ],
-      "sort_order"      : 139
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 6",
-      "short_name"      : "six",
-      "short_names"     : [
-        "six"
-      ],
-      "sort_order"      : 140
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 7",
-      "short_name"      : "seven",
-      "short_names"     : [
-        "seven"
-      ],
-      "sort_order"      : 141
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 8",
-      "short_name"      : "eight",
-      "short_names"     : [
-        "eight"
-      ],
-      "sort_order"      : 142
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 9",
-      "short_name"      : "nine",
-      "short_names"     : [
-        "nine"
-      ],
-      "sort_order"      : 143
-    }
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 1",
+    //   "short_name"      : "one",
+    //   "short_names"     : [
+    //     "one"
+    //   ],
+    //   "sort_order"      : 135
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 2",
+    //   "short_name"      : "two",
+    //   "short_names"     : [
+    //     "two"
+    //   ],
+    //   "sort_order"      : 136
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 3",
+    //   "short_name"      : "three",
+    //   "short_names"     : [
+    //     "three"
+    //   ],
+    //   "sort_order"      : 137
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 4",
+    //   "short_name"      : "four",
+    //   "short_names"     : [
+    //     "four"
+    //   ],
+    //   "sort_order"      : 138
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 5",
+    //   "short_name"      : "five",
+    //   "short_names"     : [
+    //     "five"
+    //   ],
+    //   "sort_order"      : 139
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 6",
+    //   "short_name"      : "six",
+    //   "short_names"     : [
+    //     "six"
+    //   ],
+    //   "sort_order"      : 140
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 7",
+    //   "short_name"      : "seven",
+    //   "short_names"     : [
+    //     "seven"
+    //   ],
+    //   "sort_order"      : 141
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 8",
+    //   "short_name"      : "eight",
+    //   "short_names"     : [
+    //     "eight"
+    //   ],
+    //   "sort_order"      : 142
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 9",
+    //   "short_name"      : "nine",
+    //   "short_names"     : [
+    //     "nine"
+    //   ],
+    //   "sort_order"      : 143
+    // }
   ],
   "Objects" : [
     {
@@ -5393,9 +5393,9 @@ export default {
       "has_img_twitter" : true,
       "has_img_emojione": false,
       "name"            : "SNOWMAN",
-      "short_name"      : "showman",
+      "short_name"      : "snowman",
       "short_names"     : [
-        "showman"
+        "snowman"
       ],
       "sort_order"      : 137
     },
