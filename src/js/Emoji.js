@@ -3,7 +3,13 @@ import $ from "jquery";
 
 export default class Emoji {
 
-    constructor(data){
+    static factory(data, category, callback){
+        const emoji = new Emoji(data, category);
+        emoji.setCallback(callback);
+        return emoji;
+    }
+
+    constructor(data, category){
 
         /**
          * @type {Boolean}
@@ -26,6 +32,11 @@ export default class Emoji {
         this.has_emojione_img = data['has_img_emojione'];
 
         /**
+         * @type {String} - the name of the category
+         */
+        this.category         = category;
+
+        /**
          * @type {String}
          */
         this.full_name        = data['name'];
@@ -45,6 +56,14 @@ export default class Emoji {
          * @type {string}
          */
         this.$emoji           = this.getEmojiForPlatform();
+
+        /**
+         * Callback executed when the emoji was clicked
+         *
+         * @type {Function|undefined}
+         * @private
+         */
+        this._callback        = undefined;
     }
 
     /**
@@ -77,6 +96,24 @@ export default class Emoji {
     }
 
     /**
+     * @return {String} Codepoints for the emoji
+     */
+    getCodepoints (){
+        const $image = $(this.getImage());
+        return $image.find('.emoji-inner').data('codepoints');
+    }
+
+    /**
+     * Getter for the emoji character regardless of the platform.
+     *
+     * @returns {string}
+     */
+    getCharacter() {
+        return String.fromCodePoint(`0x${this.getCodepoints()}`);
+    }
+
+
+    /**
      * Gets the platform-appropriate representation of the emoji.
      *
      * @return {string|jQuery}
@@ -86,12 +123,36 @@ export default class Emoji {
         const emote = converter.withEnvironment()
                                  .replace_colons(this.getColons());
 
-        const $emote = $(emote);
-        //If we get back html, just return it
-        if($emote.length){
-            return $emote;
-        }
-        //Otherwise wrap the character in a span and return it
-        return $(`<span class = "emoji-wrapper">${emote}</span>`);
+        return this._getWrapper().append(emote);
+    }
+
+    /**
+     * Getter for the class' markup
+     *
+     * @returns {string}
+     */
+    getMarkup() {
+        return this.$emoji;
+    }
+
+    /**
+     * Sets the callback that gets executed when the emoji gets clicked
+     *
+     * @param {Function} callback
+     * @returns {Emoji}
+     */
+    setCallback(callback){
+        this._callback = callback;
+        return this;
+    }
+
+    /**
+     * Gets the wrapper for the emoji
+     *
+     * @returns {jQuery|HTMLElement}
+     * @private
+     */
+    _getWrapper(){
+        return $(`<span class = "emoji-char-wrapper" data-name="${this.full_name}" data-category="${this.category}"></span>`);
     }
 }

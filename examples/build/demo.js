@@ -12674,8 +12674,6 @@
 	    }, {
 	        key: "getMarkup",
 	        value: function getMarkup() {
-	            var _this = this;
-
 	            if (this.$category) {
 	                return this.$category;
 	            }
@@ -12687,7 +12685,7 @@
 	            var $content = $category.find('.category-content');
 
 	            this.emojis.forEach(function (emoji) {
-	                $content.append(_this.$emoji);
+	                $content.append(emoji.getMarkup());
 	            });
 
 	            return $content;
@@ -12827,6 +12825,11 @@
 	      }
 	      //Otherwise wrap the character in a span and return it
 	      return (0, _jquery2.default)("<span class = \"emoji-wrapper\">" + emote + "</span>");
+	    }
+	  }, {
+	    key: "getMarkup",
+	    value: function getMarkup() {
+	      return this.$emoji;
 	    }
 	  }]);
 

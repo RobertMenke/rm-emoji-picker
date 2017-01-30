@@ -4,6 +4,20 @@ import $ from "jquery";
 
 export default class EmojiCategory {
 
+    /**
+     * Factory function that initializes the class with a callback
+     *
+     * @param {Object} category
+     * @param {Object} data
+     * @param {Function} callback
+     * @returns {EmojiCategory}
+     */
+    static factory(category, data, callback){
+        const category = new EmojiCategory(category, data);
+        category.setCallback(callback);
+        return category;
+    }
+
     constructor(category, data){
 
         /**
@@ -20,15 +34,28 @@ export default class EmojiCategory {
         /**
          * @type {Array<Emoji>}
          */
-        this.emojis     = data.map(emote => new Emoji(emote));
+        this.emojis     = data.map(
+            emote => Emoji.factory(emote, this.title, this._onSelection)
+        );
 
+        /**
+         * Markup for the
+         */
         this.$category  = this.getMarkup();
+
+        /**
+         * Callback that executes when an emoji gets selected
+         *
+         * @type {Function|undefined}
+         * @private
+         */
+        this._callback  = undefined;
     }
 
     /**
      * Exports the main contents for the category
      *
-     * @returns {{title: string, icon: string, emojis: Array}}
+     * @returns {{title: string, icon: string}}
      */
     exportContents() {
         return {
@@ -49,9 +76,25 @@ export default class EmojiCategory {
         const $content = $category.find('.category-content');
 
         this.emojis.forEach(emoji => {
-            $content.append(this.$emoji);
+            $content.append(emoji.getMarkup());
         });
 
         return $content;
+    }
+
+    _onSelection(emoji){
+        if(this._callback){
+            this._callback(emoji, this);
+        }
+    }
+
+    /**
+     *
+     * @param {Function} callback
+     * @returns {EmojiCategory}
+     */
+    setCallback(callback){
+        this._callback = callback;
+        return this;
     }
 }

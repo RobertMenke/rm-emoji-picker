@@ -1,5 +1,5 @@
 import $ from "jquery";
-
+import EmojiEditor from "./EmojiEditor";
 import EmojiCategory from "./EmojiCategory";
 import Tooltip from "rm-tooltip";
 import emojis from "./data";
@@ -17,9 +17,23 @@ export default class EmojiPicker {
      */
     constructor(options = undefined){
 
-        if(options){
+        this._callback = undefined;
+
+        if(typeof options === "object"){
             this._setDefaults(options);
         }
+
+        if(typeof options === "function"){
+            this._callback = options;
+        }
+
+        /**
+         * A copy of the defaults object so that state is not
+         * mutated with new instances.
+         *
+         * @type {*}
+         */
+        this.defaults   = Object.assign({}, defaults);
 
         /**
          *
@@ -52,6 +66,15 @@ export default class EmojiPicker {
          * @private
          */
         this._input     = undefined;
+
+        /**
+         * Keeps track of placing the emoji in the input, getting
+         * the contents of the editor
+         *
+         * @type {EmojiEditor|undefined}
+         */
+        this.editor    = undefined;
+
 
         let _open = false;
         Object.defineProperty(this, 'picker_open', {
@@ -91,6 +114,7 @@ export default class EmojiPicker {
         this._icon                = icon;
         this._container           = container;
         this._input               = input;
+        this.editor               = new EmojiEditor(input);
     }
 
     /**
@@ -100,7 +124,7 @@ export default class EmojiPicker {
      */
     openPicker() {
         const tooltip = new Tooltip(this._icon, this._container, this.$picker);
-        switch(defaults.positioning){
+        switch(this.defaults.positioning){
             case "autoplace":
                 tooltip.autoPlace(30, 10);
                 break;
@@ -157,10 +181,36 @@ export default class EmojiPicker {
     _setDefaults(options){
         const keys = Object.keys(options);
         keys.forEach(key => {
-            if(defaults.hasOwnProperty(key)){
-                defaults[key] = options[key];
+            if(this.defaults.hasOwnProperty(key)){
+                this.defaults[key] = options[key];
             }
         });
+    }
+
+    /**
+     * When an emoji gets clicked on the selection bubbles up
+     * to the EmojiPicker object. First, we place the emoji in
+     * the input and then fire off any callback that were supplied.
+     *
+     *
+     * @param {Emoji} emoji
+     * @param {EmojiCategory} category
+     * @private
+     */
+    _handleSelection(emoji, category){
+
+        this.editor.placeEmoji(emoji);
+
+        if(typeof this._callback === "function"){
+            this._callback(emoji, category);
+        }
+
+        if(typeof this.defaults.callback === "function"){
+            this.defaults.callback(emoji, category);
+        }
+
+        //Close the picker
+        this.picker_open = false;
     }
 
     /**
@@ -169,8 +219,9 @@ export default class EmojiPicker {
      * @private
      */
     _getCategories() {
-        return defaults.categories
-                       .map(cat => new EmojiCategory(cat, emojis[cat.title]));
+        return this.defaults
+                   .categories
+                   .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this._handleSelection));
     }
 
     /**

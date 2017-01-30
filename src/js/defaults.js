@@ -33,5 +33,11 @@ export default {
 
     default_content : "",
 
-    positioning     : "autoplace"
+    positioning     : "autoplace",
+
+    callback        : undefined,
+    //Track content editable cursor by default. If set to false,
+    //the library will not track the cursor position nor place the emoji
+    //in the input on selection.
+    track_ce_cursor : true
 }
