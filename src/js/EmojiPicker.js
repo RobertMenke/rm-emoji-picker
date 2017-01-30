@@ -86,21 +86,11 @@ export default class EmojiPicker {
                         this.openPicker();
                     }
                     else{
-                        this.$picker.remove();
+                        this.$picker.detach();
                     }
                 }
             }
         })
-    }
-
-    /**
-     * Static reference to set the state of the picker to open
-     * or closed.
-     *
-     * @param bool
-     */
-    static set picker_state(bool){
-        this.picker_open = bool;
     }
 
     /**
@@ -115,6 +105,8 @@ export default class EmojiPicker {
         this._container           = container;
         this._input               = input;
         this.editor               = new EmojiEditor(input);
+
+        this._onIconClick();
     }
 
     /**
@@ -123,6 +115,7 @@ export default class EmojiPicker {
      * @returns {EmojiPicker}
      */
     openPicker() {
+        console.log("stuff", this._icon, this._container, this.$picker);
         const tooltip = new Tooltip(this._icon, this._container, this.$picker);
         switch(this.defaults.positioning){
             case "autoplace":
@@ -142,6 +135,14 @@ export default class EmojiPicker {
         this._onTooltipClick(tooltip, event);
 
         return this;
+    }
+
+    getText () {
+        if(this.editor){
+            return this.editor.getText();
+        }
+
+        throw new Error("Did you call this listenOn method first? The listenOn method constructs an instance of EmojiEditor and it appears to be undefined.");
     }
 
     /**
@@ -202,11 +203,11 @@ export default class EmojiPicker {
         this.editor.placeEmoji(emoji);
 
         if(typeof this._callback === "function"){
-            this._callback(emoji, category);
+            this._callback.bind(this)(emoji, category);
         }
 
         if(typeof this.defaults.callback === "function"){
-            this.defaults.callback(emoji, category);
+            this.defaults.callback.bind(this)(emoji, category);
         }
 
         //Close the picker
@@ -221,7 +222,7 @@ export default class EmojiPicker {
     _getCategories() {
         return this.defaults
                    .categories
-                   .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this._handleSelection));
+                   .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this._handleSelection.bind(this)));
     }
 
     /**
@@ -241,6 +242,8 @@ export default class EmojiPicker {
         this.categories.forEach(cat => {
             $contents.append(cat.getMarkup());
         });
+
+        return $picker;
     }
 
     /**
@@ -265,7 +268,8 @@ export default class EmojiPicker {
      * @private
      */
     _onIconClick() {
-        $(this._icon).off('click.emoji-picker').on('click.emoji-picker', event => {
+
+        $(this._icon).off('click.emoji').on('click.emoji', event => {
             this.picker_open = !this.picker_open;
         });
 

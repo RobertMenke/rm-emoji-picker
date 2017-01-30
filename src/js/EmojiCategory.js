@@ -7,13 +7,13 @@ export default class EmojiCategory {
     /**
      * Factory function that initializes the class with a callback
      *
-     * @param {Object} category
+     * @param {Object} cat
      * @param {Object} data
      * @param {Function} callback
      * @returns {EmojiCategory}
      */
-    static factory(category, data, callback){
-        const category = new EmojiCategory(category, data);
+    static factory(cat, data, callback){
+        const category = new EmojiCategory(cat, data);
         category.setCallback(callback);
         return category;
     }
@@ -35,7 +35,9 @@ export default class EmojiCategory {
          * @type {Array<Emoji>}
          */
         this.emojis     = data.map(
-            emote => Emoji.factory(emote, this.title, this._onSelection)
+            emote => Emoji.factory(emote, this.title, this._onSelection.bind(this))
+        ).sort(
+            (a, b) => a.sort_order - b.sort_order
         );
 
         /**
@@ -84,7 +86,7 @@ export default class EmojiCategory {
 
     _onSelection(emoji){
         if(this._callback){
-            this._callback(emoji, this);
+            this._callback.bind(this)(emoji, this);
         }
     }
 

@@ -64,6 +64,8 @@ export default class Emoji {
          * @private
          */
         this._callback        = undefined;
+        //Set a click listener on the emoji
+        this._onClick();
     }
 
     /**
@@ -81,8 +83,7 @@ export default class Emoji {
      * @returns {string}
      */
     getUnified () {
-        const converter = Converters.factory();
-        return converter.withUnified().replace_colons(this.getColons());
+        return Converters.withUnified().replace_colons(this.getColons());
     }
 
     /**
@@ -91,8 +92,7 @@ export default class Emoji {
      * @returns {string}
      */
     getImage () {
-        const converter = Converters.factory();
-        return converter.withImage().replace_colons(this.getColons());
+        return Converters.withImage().replace_colons(this.getColons());
     }
 
     /**
@@ -100,7 +100,8 @@ export default class Emoji {
      */
     getCodepoints (){
         const $image = $(this.getImage());
-        return $image.find('.emoji-inner').data('codepoints');
+        console.log("image", $image.get(0));
+        return $image.data('codepoints');
     }
 
     /**
@@ -112,6 +113,14 @@ export default class Emoji {
         return String.fromCodePoint(`0x${this.getCodepoints()}`);
     }
 
+    /**
+     * Determines if the environment supports unified unicode.
+     *
+     * @returns {boolean}
+     */
+    static supportsUnified (){
+        return Converters.withEnvironment().replace_mode === "unified";
+    }
 
     /**
      * Gets the platform-appropriate representation of the emoji.
@@ -119,9 +128,9 @@ export default class Emoji {
      * @return {string|jQuery}
      */
     getEmojiForPlatform(){
-        const converter = Converters.factory();
-        const emote = converter.withEnvironment()
-                                 .replace_colons(this.getColons());
+
+        const emote = Converters.withEnvironment()
+                                .replace_colons(this.getColons());
 
         return this._getWrapper().append(emote);
     }
@@ -154,5 +163,15 @@ export default class Emoji {
      */
     _getWrapper(){
         return $(`<span class = "emoji-char-wrapper" data-name="${this.full_name}" data-category="${this.category}"></span>`);
+    }
+
+    _onClick(){
+        $(this.$emoji).off('click.emoji').on('click.emoji', event => {
+            if(this._callback){
+                this._callback(this);
+            }
+        });
+
+        return this;
     }
 }

@@ -3,7 +3,7 @@ import EmojiPicker from "./../../src/js/EmojiPicker";
 
 $(document).ready(() => {
 
-    const icon      = document.querySelector('.fa-smile');
+    const icon      = document.querySelector('.fa-smile-o');
     const container = document.getElementById('container');
     const input     = document.getElementById('text-input');
 
