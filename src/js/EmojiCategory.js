@@ -54,6 +54,10 @@ export default class EmojiCategory {
         this._callback  = undefined;
     }
 
+    get offset_top (){
+        return this.$category.get(0).offsetTop;
+    }
+
     /**
      * Exports the main contents for the category
      *
@@ -81,7 +85,7 @@ export default class EmojiCategory {
             $content.append(emoji.getMarkup());
         });
 
-        return $content;
+        return $category;
     }
 
     _onSelection(emoji){

@@ -9,6 +9,21 @@ export default class Emoji {
         return emoji;
     }
 
+    static get random_color (){
+        const colors = ["#FFF9C4", "#C8E6C9", "#FFE0B2", "#B2DFDB", "#C5CAE9", "#FFCDD2"];
+        return colors[Emoji.randomIntFromInterval(0, colors.length - 1)];
+    }
+
+    /**
+     * @link http://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
+     * @param min
+     * @param max
+     * @returns {number}
+     */
+    static randomIntFromInterval(min,max) {
+        return Math.floor(Math.random()*(max-min+1)+min);
+    }
+
     constructor(data, category){
 
         /**
@@ -52,6 +67,11 @@ export default class Emoji {
         this.sort_order       = data['sort_order'];
 
         /**
+         * @type {String}
+         */
+        this.hover_color      = Emoji.random_color;
+
+        /**
          * Gets the emoji for the
          * @type {string}
          */
@@ -65,7 +85,8 @@ export default class Emoji {
          */
         this._callback        = undefined;
         //Set a click listener on the emoji
-        this._onClick();
+        this._onClick()
+            ._onHover();
     }
 
     /**
@@ -165,11 +186,31 @@ export default class Emoji {
         return $(`<span class = "emoji-char-wrapper" data-name="${this.full_name}" data-category="${this.category}"></span>`);
     }
 
+    /**
+     *
+     * @returns {Emoji}
+     * @private
+     */
     _onClick(){
         $(this.$emoji).off('click.emoji').on('click.emoji', event => {
             if(this._callback){
                 this._callback(this);
             }
+        });
+
+        return this;
+    }
+
+    /**
+     *
+     * @returns {Emoji}
+     * @private
+     */
+    _onHover () {
+        $(this.$emoji).off('mouseenter.emoji').on('mouseenter.emoji', () => {
+            this.$emoji.css('background', this.hover_color);
+        }).off('mouseleave.emoji').on('mouseleave.emoji', () => {
+            this.$emoji.css('background', '');
         });
 
         return this;

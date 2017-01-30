@@ -100,11 +100,15 @@ $content_height : 300px;
   height     : 20px;
   background : #FFFFFF;
   opacity    : 0.9;
+  position   : absolute;
+  display    : block;
+  width      : 100%;
+  z-index    : 3;
 }
 
 .emoji-title-overlay > #active-title {
   line-height : 20px;
-  margin-left : 5px;
+  margin-left : 10px;
 }
 
 .emoji-content {
@@ -138,4 +142,17 @@ $content_height : 300px;
   padding        : 3px;
   width          : 21px;
   text-align     : center;
+  border-radius  : 4px;
+}
+
+.emoji-char-wrapper:hover {
+  cursor : pointer;
+}
+
+.category-title {
+  padding : 3px 0;
+}
+
+.category-title > span {
+  margin-left : 10px;
 }

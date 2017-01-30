@@ -47,6 +47,21 @@ export default class EmojiPicker {
         this.$picker    = this._getPicker();
 
         /**
+         * @type {jQuery}
+         */
+        this.$active_title = this.$picker.find('#active-title');
+
+        /**
+         * @type {jQuery}
+         */
+        this.$title_wrapper = this.$active_title.closest('.emoji-title-overlay');
+
+        /**
+         * @type {jQuery}
+         */
+        this.$content      = this.$picker.find('.emoji-content');
+
+        /**
          *
          * @type {HTMLElement|undefined}
          * @private
@@ -90,7 +105,23 @@ export default class EmojiPicker {
                     }
                 }
             }
-        })
+        });
+
+        let _active_cat;
+        Object.defineProperty(this, 'active_category', {
+            get : () => _active_cat,
+            set : value => {
+                if(!_active_cat || (value instanceof EmojiCategory && value.title !== _active_cat.title)){
+                    _active_cat = value;
+                    this.setActiveCategory();
+                }
+            }
+        });
+
+        this.active_category = this.categories[0];
+
+        this._onScroll()
+            ._onCatClick();
     }
 
     /**
@@ -115,7 +146,7 @@ export default class EmojiPicker {
      * @returns {EmojiPicker}
      */
     openPicker() {
-        console.log("stuff", this._icon, this._container, this.$picker);
+
         const tooltip = new Tooltip(this._icon, this._container, this.$picker);
         switch(this.defaults.positioning){
             case "autoplace":
@@ -143,6 +174,29 @@ export default class EmojiPicker {
         }
 
         throw new Error("Did you call this listenOn method first? The listenOn method constructs an instance of EmojiEditor and it appears to be undefined.");
+    }
+
+    /**
+     * Updates the dom based on the category that became active.
+     *
+     * @returns {EmojiPicker}
+     */
+    setActiveCategory () {
+
+        const picker = this;
+        this.$picker.find('.select-category').each(/**@this {HTMLElement}*/function(){
+            const title = this.getAttribute('data-name');
+            if(title === picker.active_category.title){
+                this.classList.add('active');
+                picker.$active_title.text(picker.active_category.title);
+                console.log(picker.$active_title.get(0));
+            }
+            else{
+                this.classList.remove('active');
+            }
+        });
+
+        return this;
     }
 
     /**
@@ -292,5 +346,51 @@ export default class EmojiPicker {
                 this.picker_open = false;
             }
         });
+    }
+
+    /**
+     *
+     * @returns {EmojiPicker}
+     * @private
+     */
+    _onScroll(){
+        this.$content.off('mousewheel.emoji').on('mousewheel.emoji', event => {
+            this.active_category = this._getActiveCategory();
+        });
+
+        return this;
+    }
+
+    _onCatClick() {
+
+        const picker = this;
+        this.$picker.find('.select-category').off('click.emoji').on('click.emoji', /**@this {HTMLElement}*/function(){
+            const cat                        = picker.getCategory(this.getAttribute('data-name'));
+            picker.$content.get(0).scrollTop = cat.offset_top;
+            picker.active_category           = picker._getActiveCategory();
+        });
+
+        return this;
+    }
+
+    /**
+     * Gets the active category based on scroll position
+     *
+     * @returns {EmojiCategory}
+     * @private
+     */
+    _getActiveCategory() {
+
+        const scroll_top = this.$content.get(0).scrollTop;
+        let cat          = this.categories[0];
+
+        for(let i = 0; i < this.categories.length; i++){
+            if(this.categories[i].offset_top > scroll_top){
+                return cat;
+            }
+            cat = this.categories[i];
+        }
+
+        return this.categories[this.categories.length - 1];
     }
 }
