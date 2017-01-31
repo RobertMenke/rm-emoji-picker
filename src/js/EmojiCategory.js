@@ -35,7 +35,7 @@ export default class EmojiCategory {
          * @type {Array<Emoji>}
          */
         this.emojis     = data.map(
-            emote => Emoji.factory(emote, this.title, this._onSelection.bind(this))
+            emote => Emoji.factory(emote, this.title, this._onEvent.bind(this))
         ).sort(
             (a, b) => a.sort_order - b.sort_order
         );
@@ -46,12 +46,28 @@ export default class EmojiCategory {
         this.$category  = this.getMarkup();
 
         /**
+         * @type {jQuery}
+         */
+        this.$title     = this.$category.find('.category-title');
+
+        /**
          * Callback that executes when an emoji gets selected
          *
          * @type {Function|undefined}
          * @private
          */
         this._callback  = undefined;
+
+        let _search_term = "";
+        Object.defineProperty(this, 'search_term', {
+            get : () => _search_term,
+            set : value => {
+                if(_search_term !== value){
+                    _search_term = value;
+                    this._search();
+                }
+            }
+        })
     }
 
     get offset_top (){
@@ -88,9 +104,16 @@ export default class EmojiCategory {
         return $category;
     }
 
-    _onSelection(emoji){
+    /**
+     * Carries an event from the Emoji to the EmojiPicker instance.
+     *
+     * @param action
+     * @param emoji
+     * @private
+     */
+    _onEvent(action, emoji){
         if(this._callback){
-            this._callback.bind(this)(emoji, this);
+            this._callback(action, emoji, this);
         }
     }
 
@@ -101,6 +124,43 @@ export default class EmojiCategory {
      */
     setCallback(callback){
         this._callback = callback;
+        return this;
+    }
+
+    /**
+     * Show/hide emojis based on a search term
+     * @private
+     */
+    _search(){
+        if(this.search_term.trim().length === 0){
+            this._clearSearch();
+        }
+        else{
+            this.$title.addClass('inactive');
+
+            const regexp = new RegExp(this.search_term.toLowerCase());
+
+            this.emojis.forEach(emoji => {
+                if(emoji.full_name && regexp.test(emoji.full_name.toLowerCase())){
+                   emoji.$emoji.show();
+                }
+                else{
+                    emoji.$emoji.hide();
+                }
+            });
+        }
+    }
+
+    /**
+     * Clear the effects of the search
+     *
+     * @returns {EmojiCategory}
+     * @private
+     */
+    _clearSearch() {
+        this.$title.removeClass('inactive');
+        this.emojis.forEach(emoji => emoji.$emoji.show());
+
         return this;
     }
 }

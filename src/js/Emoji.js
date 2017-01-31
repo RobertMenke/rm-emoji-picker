@@ -1,5 +1,6 @@
 import Converters from "./Converters";
 import $ from "jquery";
+import defaults from "./defaults";
 
 export default class Emoji {
 
@@ -83,7 +84,7 @@ export default class Emoji {
          * @type {Function|undefined}
          * @private
          */
-        this._callback        = undefined;
+        this._bubble        = undefined;
         //Set a click listener on the emoji
         this._onClick()
             ._onHover();
@@ -121,8 +122,11 @@ export default class Emoji {
      */
     getCodepoints (){
         const $image = $(this.getImage());
-        console.log("image", $image.get(0));
-        return $image.data('codepoints');
+        if($image.hasClass('emoji-inner')){
+            return $image.data('codepoints');
+        }
+
+        return $image.find('.emoji-inner').data('codepoints');
     }
 
     /**
@@ -131,7 +135,15 @@ export default class Emoji {
      * @returns {string}
      */
     getCharacter() {
-        return String.fromCodePoint(`0x${this.getCodepoints()}`);
+        const codepoints = this.getCodepoints();
+        console.log("codepoints", codepoints);
+        if(/-/g.test(codepoints)){
+            const arr = codepoints.split("-");
+            const one = `0x${arr[0]}`;
+            const two = `0x${arr[1]}`;
+            return String.fromCodePoint(one,two);
+        }
+        return String.fromCodePoint(`0x${codepoints}`);
     }
 
     /**
@@ -157,6 +169,17 @@ export default class Emoji {
     }
 
     /**
+     *
+     * @returns {*}
+     */
+    getPreview(){
+        const emote = Converters.withEnvironment()
+                                .replace_colons(this.getColons());
+
+        return this._getPreviewWrapper().append(emote);
+    }
+
+    /**
      * Getter for the class' markup
      *
      * @returns {string}
@@ -172,7 +195,7 @@ export default class Emoji {
      * @returns {Emoji}
      */
     setCallback(callback){
-        this._callback = callback;
+        this._bubble = callback;
         return this;
     }
 
@@ -187,14 +210,24 @@ export default class Emoji {
     }
 
     /**
+     * Gets the wrapper for the preview
+     *
+     * @returns {jQuery|HTMLElement}
+     * @private
+     */
+    _getPreviewWrapper(){
+        return $(`<span class = "emoji-preview-wrapper" data-name="${this.full_name}" data-category="${this.category}"></span>`);
+    }
+
+    /**
      *
      * @returns {Emoji}
      * @private
      */
     _onClick(){
         $(this.$emoji).off('click.emoji').on('click.emoji', event => {
-            if(this._callback){
-                this._callback(this);
+            if(this._bubble){
+                this._bubble(defaults.events.SELECTED, this);
             }
         });
 
@@ -208,8 +241,10 @@ export default class Emoji {
      */
     _onHover () {
         $(this.$emoji).off('mouseenter.emoji').on('mouseenter.emoji', () => {
+            this._bubble(defaults.events.EMOJI_MOUSEENTER, this);
             this.$emoji.css('background', this.hover_color);
         }).off('mouseleave.emoji').on('mouseleave.emoji', () => {
+            this._bubble(defaults.events.EMOJI_MOUSELEAVE, this);
             this.$emoji.css('background', '');
         });
 

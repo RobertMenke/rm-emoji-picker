@@ -118,7 +118,7 @@ export default class EmojiEditor {
                        .replace(/[\u200B-\u200D\uFEFF]/g, '');
         }
 
-        return this._input.value;
+        return Converters.withUnified().replace_colons(this._input.value);
     }
 
     /**

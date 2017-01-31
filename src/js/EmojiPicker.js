@@ -54,12 +54,37 @@ export default class EmojiPicker {
         /**
          * @type {jQuery}
          */
-        this.$title_wrapper = this.$active_title.closest('.emoji-title-overlay');
+        this.$preview_emoji = this.$picker.find('#emoji-large-preview');
+
+        /**
+         * @type {jQuery}
+         */
+        this.$preview_name  = this.$picker.find('#emoji-name');
+
+        /**
+         * @type {jQuery}
+         */
+        this.$preview_colon = this.$picker.find('#colon-display');
 
         /**
          * @type {jQuery}
          */
         this.$content      = this.$picker.find('.emoji-content');
+
+        /**
+         * @type {jQuery}
+         */
+        this.$default_footer = this.$picker.find('.default-content');
+
+        /**
+         * @type {jQuery}
+         */
+        this.$preview        = this.$picker.find('.emoji-preview');
+
+        /**
+         * @type {jQuery}
+         */
+        this.$search         = this.$picker.find('.search-emojis');
 
         /**
          *
@@ -118,10 +143,23 @@ export default class EmojiPicker {
             }
         });
 
+        let _emoji;
+        Object.defineProperty(this, 'active_emoji', {
+           get : () => _emoji,
+            set : value => {
+               if(!_emoji || !value || (value.full_name !== _emoji.full_name)){
+                   _emoji = value;
+                   this._updatePreview();
+               }
+            }
+        });
+
+
         this.active_category = this.categories[0];
 
         this._onScroll()
-            ._onCatClick();
+            ._onCatClick()
+            ._onSearch();
     }
 
     /**
@@ -164,6 +202,7 @@ export default class EmojiPicker {
         }
 
         this._onTooltipClick(tooltip, event);
+        this.$content.get(0).scrollTop = this.active_category.offset_top;
 
         return this;
     }
@@ -189,7 +228,6 @@ export default class EmojiPicker {
             if(title === picker.active_category.title){
                 this.classList.add('active');
                 picker.$active_title.text(picker.active_category.title);
-                console.log(picker.$active_title.get(0));
             }
             else{
                 this.classList.remove('active');
@@ -242,6 +280,24 @@ export default class EmojiPicker {
         });
     }
 
+    _dispatchBubble(action, emoji, category){
+
+        const events = defaults.events;
+        switch(action){
+            case events.SELECTED:
+                this._handleSelection(emoji, category);
+                break;
+            case events.EMOJI_MOUSEENTER:
+                this.active_emoji = emoji;
+                break;
+            case events.EMOJI_MOUSELEAVE:
+                this.active_emoji = undefined;
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * When an emoji gets clicked on the selection bubbles up
      * to the EmojiPicker object. First, we place the emoji in
@@ -257,11 +313,11 @@ export default class EmojiPicker {
         this.editor.placeEmoji(emoji);
 
         if(typeof this._callback === "function"){
-            this._callback.bind(this)(emoji, category);
+            this._callback(emoji, category);
         }
 
         if(typeof this.defaults.callback === "function"){
-            this.defaults.callback.bind(this)(emoji, category);
+            this.defaults.callback(emoji, category);
         }
 
         //Close the picker
@@ -274,9 +330,12 @@ export default class EmojiPicker {
      * @private
      */
     _getCategories() {
-        return this.defaults
-                   .categories
-                   .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this._handleSelection.bind(this)));
+        const cats = this.defaults
+                         .categories
+                         .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this._dispatchBubble.bind(this)));
+
+        cats[0].$category.addClass('first');
+        return cats;
     }
 
     /**
@@ -287,7 +346,7 @@ export default class EmojiPicker {
      */
     _getPicker() {
         const $picker = $(picker({
-            default_content: defaults.default_content,
+            default_content: defaults.default_footer_message,
             categories     : this.categories.map(cat => cat.exportContents())
         }));
 
@@ -374,6 +433,27 @@ export default class EmojiPicker {
     }
 
     /**
+     *
+     *
+     * @returns {EmojiPicker}
+     * @private
+     */
+    _onSearch() {
+        this.$search.off('input.emoji').on('input.emoji', () => {
+            const search = this.$search.val().trim();
+            this.categories.forEach(cat => cat.search_term = search);
+            this.$active_title.text(`Results for: ${search}`);
+            if(search.length === 0){
+                this.active_category = this._getActiveCategory();
+                //Manually call this in case the category hadn't changed since the search started
+                this.setActiveCategory();
+            }
+        });
+
+        return this;
+    }
+
+    /**
      * Gets the active category based on scroll position
      *
      * @returns {EmojiCategory}
@@ -392,5 +472,29 @@ export default class EmojiPicker {
         }
 
         return this.categories[this.categories.length - 1];
+    }
+
+    /**
+     * Updates the preview section with either the default content
+     * or
+     *
+     * @private
+     */
+    _updatePreview(){
+
+        const emoji = this.active_emoji;
+        if(emoji){
+            this.$default_footer.hide();
+            this.$preview_emoji.html(emoji.getPreview());
+            this.$preview_name.text(emoji.short_name);
+            if(defaults.show_colon_preview){
+                this.$preview_colon.text(emoji.getColons());
+            }
+            this.$preview.show();
+        }
+        else{
+            this.$preview.hide();
+            this.$default_footer.show();
+        }
     }
 }
