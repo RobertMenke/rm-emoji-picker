@@ -1,0 +1,35 @@
+<div id = "emoji-picker">
+    <div class = "emoji-section emoji-header">
+        {{#categories}}
+            <div class = "select-category" data-name="{{title}}">
+                {{{icon}}}
+            </div>
+        {{/categories}}
+    </div>
+    <div class = "emoji-section emoji-search">
+        <div class = "search-wrapper">
+            <div class = "search-section centered">
+                <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+            <div class = "search-section input">
+                <input type="text" class = "search-emojis" placeholder="Search"/>
+            </div>
+        </div>
+    </div>
+    <div class = "emoji-title-overlay">
+        <span id = "active-title"></span>
+    </div>
+    <div class = "emoji-section emoji-content"></div>
+    <div class = "emoji-section emoji-footer">
+        <div class = "default-content">
+            <span>{{default_content}}</span>
+        </div>
+        <div class = "emoji-preview">
+            <div class = "preview-section" id = "emoji-large-preview"></div>
+            <div class = "preview-section">
+                <span id = "emoji-name"></span>
+                <span id = "colon-display"></span>
+            </div>
+        </div>
+    </div>
+</div>

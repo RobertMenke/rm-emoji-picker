@@ -1,8 +1,9 @@
 import EmojiConvertor from "./../../non_npm_dependencies/iamcal_js_emoji/lib/emoji";
+import defaults from "./defaults";
 
 "use strict";
 
-export default class Converters {
+class Converters {
 
     /**
      *
@@ -19,6 +20,26 @@ export default class Converters {
         this.unicode = Converters.unified;
         this.env     = Converters.environment;
         this.css     = Converters.image;
+        if(defaults.use_sheets){
+            this.setSheets(defaults.sheets);
+        }
+    }
+
+    /**
+     * Sets the image sheets used by class
+     *
+     * @param sheets
+     */
+    setSheets (sheets) {
+        sheets = sheets || defaults.sheets;
+
+        [this.withEnvironment(), this.withImage()].forEach(/**EmojiConvertor*/converter => {
+            converter.img_sets.apple.sheet    = sheets.apple;
+            converter.img_sets.google.sheet   = sheets.google;
+            converter.img_sets.twitter.sheet  = sheets.twitter;
+            converter.img_sets.emojione.sheet = sheets.emojione;
+            converter.use_sheet               = true;
+        });
     }
 
     /**
@@ -46,6 +67,16 @@ export default class Converters {
      */
     withImage(){
         return this.css;
+    }
+
+    /**
+     * Tells us whether or not the environment can support
+     * unicode emojis.
+     *
+     * @returns {boolean}
+     */
+    canSupportUnified () {
+        return this.env.replace_mode === "unified";
     }
 
     /**
@@ -82,3 +113,6 @@ export default class Converters {
         return converter;
     }
 }
+
+//Export as a singleton
+export default new Converters();
