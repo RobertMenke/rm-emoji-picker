@@ -11,7 +11,7 @@ export default class Emoji {
     }
 
     static get random_color (){
-        const colors = ["#FFF9C4", "#C8E6C9", "#FFE0B2", "#B2DFDB", "#C5CAE9", "#FFCDD2"];
+        const colors = ["blue", "yellow", "green", "orange", "indigo", "pink"];
         return colors[Emoji.randomIntFromInterval(0, colors.length - 1)];
     }
 
@@ -136,7 +136,6 @@ export default class Emoji {
      */
     getCharacter() {
         const codepoints = this.getCodepoints();
-        console.log("codepoints", codepoints);
         if(/-/g.test(codepoints)){
             const arr = codepoints.split("-");
             const one = `0x${arr[0]}`;
@@ -206,7 +205,7 @@ export default class Emoji {
      * @private
      */
     _getWrapper(){
-        return $(`<span class = "emoji-char-wrapper" data-name="${this.full_name}" data-category="${this.category}"></span>`);
+        return $(`<span class = "emoji-char-wrapper ${this.hover_color}" data-name="${this.full_name}" data-category="${this.category}"></span>`);
     }
 
     /**
@@ -216,7 +215,7 @@ export default class Emoji {
      * @private
      */
     _getPreviewWrapper(){
-        return $(`<span class = "emoji-preview-wrapper" data-name="${this.full_name}" data-category="${this.category}"></span>`);
+        return $(`<span class = "emoji-preview-wrapper ${this.hover_color}" data-name="${this.full_name}" data-category="${this.category}"></span>`);
     }
 
     /**
@@ -242,10 +241,8 @@ export default class Emoji {
     _onHover () {
         $(this.$emoji).off('mouseenter.emoji').on('mouseenter.emoji', () => {
             this._bubble(defaults.events.EMOJI_MOUSEENTER, this);
-            this.$emoji.css('background', this.hover_color);
         }).off('mouseleave.emoji').on('mouseleave.emoji', () => {
             this._bubble(defaults.events.EMOJI_MOUSELEAVE, this);
-            this.$emoji.css('background', '');
         });
 
         return this;

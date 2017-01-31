@@ -42,6 +42,8 @@ export default {
     //in the input on selection.
     track_ce_cursor: true,
 
+    use_sheets : true,
+
     events: {
         SELECTED        : "SELECTED",
         EMOJI_MOUSEENTER: "MOUSEENTER",
@@ -49,9 +51,9 @@ export default {
     },
 
     sheets: {
-        apple   : './../sheets/sheet_apple_64_indexed_128.png',
-        google  : './../sheets/sheet_google_64_indexed_128.png',
-        twitter : './../sheets/sheet_twitter_64_indexed_128.png',
-        emojione: './../sheets/sheet_emojione_64_indexed_128.png'
+        apple   : './sheets/sheet_apple_64_indexed_128.png',
+        google  : './sheets/sheet_google_64_indexed_128.png',
+        twitter : './sheets/sheet_twitter_64_indexed_128.png',
+        emojione: './sheets/sheet_emojione_64_indexed_128.png'
     }
 }

@@ -1,6 +1,7 @@
 import $ from "jquery";
 import EmojiEditor from "./EmojiEditor";
 import EmojiCategory from "./EmojiCategory";
+import Converters from "./Converters";
 import Tooltip from "rm-tooltip";
 import emojis from "./data";
 import defaults from "./defaults";
@@ -19,6 +20,14 @@ export default class EmojiPicker {
 
         this._callback = undefined;
 
+        /**
+         * A copy of the defaults object so that state is not
+         * mutated with new instances.
+         *
+         * @type {*}
+         */
+        this.defaults   = Object.assign({}, defaults);
+
         if(typeof options === "object"){
             this._setDefaults(options);
         }
@@ -27,13 +36,6 @@ export default class EmojiPicker {
             this._callback = options;
         }
 
-        /**
-         * A copy of the defaults object so that state is not
-         * mutated with new instances.
-         *
-         * @type {*}
-         */
-        this.defaults   = Object.assign({}, defaults);
 
         /**
          *
@@ -163,6 +165,32 @@ export default class EmojiPicker {
     }
 
     /**
+     * Renders html or text containing emojis
+     *
+     * @param str
+     * @returns {string}
+     */
+    static render(str) {
+
+        const converter = Converters.withEnvironment();
+
+        return converter.replace_unified(
+               converter.replace_colons(
+                    str
+                )
+            );
+    }
+
+    /**
+     *
+     * @param {object} sheets
+     */
+    static setSheets (sheets = undefined){
+        sheets          = sheets || defaults.sheets;
+        Converters.setSheets(sheets);
+    }
+
+    /**
      *
      * @param {HTMLElement} icon
      * @param {HTMLElement} container
@@ -188,7 +216,7 @@ export default class EmojiPicker {
         const tooltip = new Tooltip(this._icon, this._container, this.$picker);
         switch(this.defaults.positioning){
             case "autoplace":
-                tooltip.autoPlace(30, 10);
+                tooltip.autoPlace(43, 10);
                 break;
             case "vertical":
                 tooltip.autoPlaceVertically(10);
@@ -207,6 +235,11 @@ export default class EmojiPicker {
         return this;
     }
 
+    /**
+     * Getter for the input's text.
+     *
+     * @returns {*}
+     */
     getText () {
         if(this.editor){
             return this.editor.getText();
@@ -278,6 +311,10 @@ export default class EmojiPicker {
                 this.defaults[key] = options[key];
             }
         });
+
+        if(this.defaults.use_sheets){
+            Converters.setSheets(this.defaults.sheets);
+        }
     }
 
     _dispatchBubble(action, emoji, category){

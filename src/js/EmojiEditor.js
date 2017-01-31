@@ -30,6 +30,7 @@ export default class EmojiEditor {
         this.cursor_position = undefined;
 
         this._trackCursor();
+        this._onPaste();
     }
 
 
@@ -119,6 +120,29 @@ export default class EmojiEditor {
         }
 
         return Converters.withUnified().replace_colons(this._input.value);
+    }
+
+    /**
+     * Intercepts paste events for contenteditable divs so that we don't get
+     * any of the special html that gets inserted automatically.
+     *
+     * @returns {EmojiEditor}
+     * @private
+     */
+    _onPaste(){
+        if(this._is_content_editable){
+            $(this._input).off('paste.editable').on('paste.editable', event => {
+                event.stopPropagation();
+                event.preventDefault();
+
+                const clipboard_data = event.originalEvent.clipboardData || window.clipboardData;
+                const pasted_data    = clipboard_data.getData('text');
+                const text           = EmojiEditor.pasteTextAtCaret(pasted_data);
+                EmojiEditor.selectElement(text);
+            });
+        }
+
+        return this;
     }
 
     /**

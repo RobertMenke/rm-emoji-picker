@@ -1,5 +1,6 @@
 import EmojiConvertor from "./../../non_npm_dependencies/iamcal_js_emoji/lib/emoji";
 import defaults from "./defaults";
+
 "use strict";
 
 class Converters {
@@ -19,16 +20,25 @@ class Converters {
         this.unicode = Converters.unified;
         this.env     = Converters.environment;
         this.css     = Converters.image;
-        this.setSheets(defaults.sheets);
+        if(defaults.use_sheets){
+            this.setSheets(defaults.sheets);
+        }
     }
 
+    /**
+     * Sets the image sheets used by class
+     *
+     * @param sheets
+     */
     setSheets (sheets) {
+        sheets = sheets || defaults.sheets;
+
         [this.withEnvironment(), this.withImage()].forEach(/**EmojiConvertor*/converter => {
             converter.img_sets.apple.sheet    = sheets.apple;
             converter.img_sets.google.sheet   = sheets.google;
             converter.img_sets.twitter.sheet  = sheets.twitter;
             converter.img_sets.emojione.sheet = sheets.emojione;
-            converter.use_sheet = true;
+            converter.use_sheet               = true;
         });
     }
 

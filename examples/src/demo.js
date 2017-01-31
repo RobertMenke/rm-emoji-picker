@@ -1,14 +1,22 @@
 import $ from "jquery";
-import EmojiPicker from "./../../src/js/EmojiPicker";
+import EmojiPicker from "./../../dist/EmojiPicker";
 
 $(document).ready(() => {
 
-
+    console.log("picker", EmojiPicker);
     const icon      = document.querySelector('.fa-smile-o');
     const container = document.getElementById('container');
     const input     = document.getElementById('text-input');
 
-    const picker = new EmojiPicker();
+    const picker = new EmojiPicker({
+        sheets: {
+            apple   : './../sheets/sheet_apple_64_indexed_128.png',
+            google  : './../sheets/sheet_google_64_indexed_128.png',
+            twitter : './../sheets/sheet_twitter_64_indexed_128.png',
+            emojione: './../sheets/sheet_emojione_64_indexed_128.png'
+        },
+        positioning : "autoplace"
+    });
     picker.listenOn(icon, container, input);
 
     setInterval(() => {
