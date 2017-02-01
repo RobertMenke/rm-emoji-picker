@@ -188,6 +188,16 @@ export default class Emoji {
     }
 
     /**
+     * Gets the html of an emoji for things like pasting
+     * raw html into the contenteditable.
+     *
+     * @return {String}
+     */
+    getHtml() {
+        return this.$emoji.get(0).innerHTML;
+    }
+
+    /**
      * Sets the callback that gets executed when the emoji gets clicked
      *
      * @param {Function} callback

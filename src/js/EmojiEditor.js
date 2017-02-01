@@ -8,8 +8,9 @@ export default class EmojiEditor {
     /**
      *
      * @param {HTMLElement|HTMLTextAreaElement|HTMLInputElement} input
+     * @param {Boolean} prevent_new_line
      */
-    constructor(input){
+    constructor(input, prevent_new_line = false){
         /**
          *
          * @type {HTMLElement|HTMLTextAreaElement|HTMLInputElement}
@@ -28,6 +29,12 @@ export default class EmojiEditor {
          * @type {Range|undefined}
          */
         this.cursor_position = undefined;
+
+        /**
+         *
+         * @type {boolean}
+         */
+        this.prevent_new_line = prevent_new_line;
 
         this._trackCursor();
         this._onPaste();
@@ -51,15 +58,16 @@ export default class EmojiEditor {
             let node;
             if(EmojiEditor.supportsUnified()){
                 node = EmojiEditor.pasteTextAtCaret(emoji.getCharacter());
+                EmojiEditor.selectElement(node);
             }
             else {
-                node = EmojiEditor.pasteHtml(emoji.getMarkup());
+                node = EmojiEditor.pasteHtml(emoji.getHtml());
             }
 
-            EmojiEditor.selectElement(node);
+            return node;
         }
         else{
-            this.pasteInputText(emoji.getColons());
+            return this.pasteInputText(emoji.getColons());
         }
     }
 
@@ -68,6 +76,7 @@ export default class EmojiEditor {
      * Pastes text at the cursor while preserving cursor position.
      *
      * @param text
+     * @return {String}
      */
     pasteInputText(text){
 
@@ -78,6 +87,8 @@ export default class EmojiEditor {
                                 + this._input.value.substr(cursor_position);
 
         this.setInputCaretPosition(cursor_position + this._input.value.length - current_length);
+
+        return text;
     }
 
     /**
@@ -122,6 +133,17 @@ export default class EmojiEditor {
         return Converters.withUnified().replace_colons(this._input.value);
     }
 
+    /**
+     * Empty the input's contents.
+     */
+    empty () {
+        if(this._is_content_editable){
+            this._input.innerHTML = "";
+        }
+        else{
+            this._input.value = "";
+        }
+    }
     /**
      * Intercepts paste events for contenteditable divs so that we don't get
      * any of the special html that gets inserted automatically.
@@ -185,12 +207,26 @@ export default class EmojiEditor {
         }).join("");
     }
 
+    /**
+     * Tracks the cursor position and monitors the enter button in case prevent_new_line is true
+     *
+     * @returns {EmojiEditor}
+     * @private
+     */
     _trackCursor(){
         if(this._is_content_editable){
-            $(this._input).off('keyup.emoji').on('keyup.emoji', () => {
+            $(this._input).off('keyup.emoji mouseup.emoji').on('keyup.emoji mouseup.emoji', () => {
                 this.cursor_position = EmojiEditor.saveSelection();
             });
+
+            $(this._input).off('keydown.emoji').on('keydown.emoji', event => {
+                if(event.which === 13 && this.prevent_new_line){
+                    event.preventDefault();
+                }
+            });
         }
+
+        return this;
     }
     /**
      * Extracts the text content from a contenteditable and extracts any spans.
@@ -254,7 +290,7 @@ export default class EmojiEditor {
      * @param html
      */
     static pasteHtml(html){
-        EmojiEditor.pasteHtmlAtCaret(html + "&#8203;");
+        return EmojiEditor.pasteHtmlAtCaret(html + "&#8203;");
     }
     /**
      * saves the position of the cursor in a contenteditable div
@@ -395,7 +431,7 @@ export default class EmojiEditor {
                     sel.addRange(range);
                 }
 
-                return last_node;
+                return first_node;
             }
         }
         else if((sel = document.selection) && sel.type != "Control"){

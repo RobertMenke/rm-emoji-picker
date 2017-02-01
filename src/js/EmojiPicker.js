@@ -6,6 +6,7 @@ import Tooltip from "rm-tooltip";
 import emojis from "./data";
 import defaults from "./defaults";
 import picker from "./../views/picker.mustache";
+import "./polyfills";
 
 "use strict";
 
@@ -201,7 +202,7 @@ export default class EmojiPicker {
         this._icon                = icon;
         this._container           = container;
         this._input               = input;
-        this.editor               = new EmojiEditor(input);
+        this.editor               = new EmojiEditor(input, this.defaults.prevent_new_line);
 
         this._onIconClick();
     }
@@ -214,19 +215,27 @@ export default class EmojiPicker {
     openPicker() {
 
         const tooltip = new Tooltip(this._icon, this._container, this.$picker);
-        switch(this.defaults.positioning){
-            case "autoplace":
-                tooltip.autoPlace(43, 10);
-                break;
-            case "vertical":
-                tooltip.autoPlaceVertically(10);
-                break;
-            case "horizontal":
-                tooltip.autoPlaceHorizontally(10);
-                break;
-            default:
-                tooltip.autoPlace(30, 10);
-                break;
+        tooltip.center();
+        //If the developer supplied a function to position the tooltip
+        if(typeof this.defaults.positioning === "function"){
+            this.defaults.positioning(tooltip);
+        }
+        else {
+
+            switch (this.defaults.positioning) {
+                case "autoplace":
+                    tooltip.autoPlace(43, 10);
+                    break;
+                case "vertical":
+                    tooltip.autoPlaceVertically(10);
+                    break;
+                case "horizontal":
+                    tooltip.autoPlaceHorizontally(10);
+                    break;
+                default:
+                    tooltip.autoPlace(43, 10);
+                    break;
+            }
         }
 
         this._onTooltipClick(tooltip, event);
@@ -246,6 +255,18 @@ export default class EmojiPicker {
         }
 
         throw new Error("Did you call this listenOn method first? The listenOn method constructs an instance of EmojiEditor and it appears to be undefined.");
+    }
+
+    /**
+     * Empties out the input from the editor.
+     */
+    emptyInput () {
+        if(this.editor){
+            this.editor.empty();
+        }
+        else{
+            console.log("Did you call the listenOn method first? The EmojiEditor instance is undefined.");
+        }
     }
 
     /**
@@ -347,18 +368,19 @@ export default class EmojiPicker {
      */
     _handleSelection(emoji, category){
 
-        this.editor.placeEmoji(emoji);
+        const node = this.editor.placeEmoji(emoji);
 
         if(typeof this._callback === "function"){
-            this._callback(emoji, category);
+            this._callback(emoji, category, node);
         }
 
         if(typeof this.defaults.callback === "function"){
-            this.defaults.callback(emoji, category);
+            this.defaults.callback(emoji, category, node);
         }
 
         //Close the picker
-        this.picker_open = false;
+        this.picker_open  = false;
+        this.active_emoji = undefined;
     }
 
     /**
@@ -450,7 +472,7 @@ export default class EmojiPicker {
      * @private
      */
     _onScroll(){
-        this.$content.off('mousewheel.emoji').on('mousewheel.emoji', event => {
+        this.$content.off('scroll.emoji').on('scroll.emoji', event => {
             this.active_category = this._getActiveCategory();
         });
 
@@ -524,8 +546,12 @@ export default class EmojiPicker {
             this.$default_footer.hide();
             this.$preview_emoji.html(emoji.getPreview());
             this.$preview_name.text(emoji.short_name);
-            if(defaults.show_colon_preview){
-                this.$preview_colon.text(emoji.getColons());
+            if(this.defaults.show_colon_preview){
+                this.$preview_colon.text(emoji.getColons());
+                this.$preview_name.removeClass('name-only');
+            }
+            else{
+                this.$preview_name.addClass('name-only');
             }
             this.$preview.show();
         }

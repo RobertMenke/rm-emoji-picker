@@ -107,10 +107,11 @@ class Converters {
      * @returns {emoji}
      */
     static get image() {
-        const converter = new EmojiConvertor();
-        converter.init_env();
-        converter.replace_mode = 'css';
-        return converter;
+        const converter = new EmojiConvertor();
+        converter.init_env();
+        converter.replace_mode = 'css';
+        converter.supports_css = true;
+        return converter;
     }
 }
 

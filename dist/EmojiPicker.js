@@ -87,6 +87,8 @@ module.exports =
 
 	var _picker2 = _interopRequireDefault(_picker);
 
+	__webpack_require__(16);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -275,7 +277,7 @@ module.exports =
 	            this._icon = icon;
 	            this._container = container;
 	            this._input = input;
-	            this.editor = new _EmojiEditor2.default(input);
+	            this.editor = new _EmojiEditor2.default(input, this.defaults.prevent_new_line);
 
 	            this._onIconClick();
 	        }
@@ -291,19 +293,26 @@ module.exports =
 	        value: function openPicker() {
 
 	            var tooltip = new _rmTooltip2.default(this._icon, this._container, this.$picker);
-	            switch (this.defaults.positioning) {
-	                case "autoplace":
-	                    tooltip.autoPlace(43, 10);
-	                    break;
-	                case "vertical":
-	                    tooltip.autoPlaceVertically(10);
-	                    break;
-	                case "horizontal":
-	                    tooltip.autoPlaceHorizontally(10);
-	                    break;
-	                default:
-	                    tooltip.autoPlace(30, 10);
-	                    break;
+	            tooltip.center();
+	            //If the developer supplied a function to position the tooltip
+	            if (typeof this.defaults.positioning === "function") {
+	                this.defaults.positioning(tooltip);
+	            } else {
+
+	                switch (this.defaults.positioning) {
+	                    case "autoplace":
+	                        tooltip.autoPlace(43, 10);
+	                        break;
+	                    case "vertical":
+	                        tooltip.autoPlaceVertically(10);
+	                        break;
+	                    case "horizontal":
+	                        tooltip.autoPlaceHorizontally(10);
+	                        break;
+	                    default:
+	                        tooltip.autoPlace(43, 10);
+	                        break;
+	                }
 	            }
 
 	            this._onTooltipClick(tooltip, event);
@@ -326,6 +335,20 @@ module.exports =
 	            }
 
 	            throw new Error("Did you call this listenOn method first? The listenOn method constructs an instance of EmojiEditor and it appears to be undefined.");
+	        }
+
+	        /**
+	         * Empties out the input from the editor.
+	         */
+
+	    }, {
+	        key: "emptyInput",
+	        value: function emptyInput() {
+	            if (this.editor) {
+	                this.editor.empty();
+	            } else {
+	                console.log("Did you call the listenOn method first? The EmojiEditor instance is undefined.");
+	            }
 	        }
 
 	        /**
@@ -452,18 +475,19 @@ module.exports =
 	        key: "_handleSelection",
 	        value: function _handleSelection(emoji, category) {
 
-	            this.editor.placeEmoji(emoji);
+	            var node = this.editor.placeEmoji(emoji);
 
 	            if (typeof this._callback === "function") {
-	                this._callback(emoji, category);
+	                this._callback(emoji, category, node);
 	            }
 
 	            if (typeof this.defaults.callback === "function") {
-	                this.defaults.callback(emoji, category);
+	                this.defaults.callback(emoji, category, node);
 	            }
 
 	            //Close the picker
 	            this.picker_open = false;
+	            this.active_emoji = undefined;
 	        }
 
 	        /**
@@ -582,7 +606,7 @@ module.exports =
 	        value: function _onScroll() {
 	            var _this6 = this;
 
-	            this.$content.off('mousewheel.emoji').on('mousewheel.emoji', function (event) {
+	            this.$content.off('scroll.emoji').on('scroll.emoji', function (event) {
 	                _this6.active_category = _this6._getActiveCategory();
 	            });
 
@@ -670,8 +694,11 @@ module.exports =
 	                this.$default_footer.hide();
 	                this.$preview_emoji.html(emoji.getPreview());
 	                this.$preview_name.text(emoji.short_name);
-	                if (_defaults2.default.show_colon_preview) {
+	                if (this.defaults.show_colon_preview) {
 	                    this.$preview_colon.text(emoji.getColons());
+	                    this.$preview_name.removeClass('name-only');
+	                } else {
+	                    this.$preview_name.addClass('name-only');
 	                }
 	                this.$preview.show();
 	            } else {
@@ -10556,8 +10583,11 @@ module.exports =
 	    /**
 	     *
 	     * @param {HTMLElement|HTMLTextAreaElement|HTMLInputElement} input
+	     * @param {Boolean} prevent_new_line
 	     */
 	    function EmojiEditor(input) {
+	        var prevent_new_line = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
 	        _classCallCheck(this, EmojiEditor);
 
 	        /**
@@ -10578,6 +10608,12 @@ module.exports =
 	         * @type {Range|undefined}
 	         */
 	        this.cursor_position = undefined;
+
+	        /**
+	         *
+	         * @type {boolean}
+	         */
+	        this.prevent_new_line = prevent_new_line;
 
 	        this._trackCursor();
 	        this._onPaste();
@@ -10604,13 +10640,14 @@ module.exports =
 	                var node = void 0;
 	                if (EmojiEditor.supportsUnified()) {
 	                    node = EmojiEditor.pasteTextAtCaret(emoji.getCharacter());
+	                    EmojiEditor.selectElement(node);
 	                } else {
-	                    node = EmojiEditor.pasteHtml(emoji.getMarkup());
+	                    node = EmojiEditor.pasteHtml(emoji.getHtml());
 	                }
 
-	                EmojiEditor.selectElement(node);
+	                return node;
 	            } else {
-	                this.pasteInputText(emoji.getColons());
+	                return this.pasteInputText(emoji.getColons());
 	            }
 	        }
 
@@ -10618,6 +10655,7 @@ module.exports =
 	         * Pastes text at the cursor while preserving cursor position.
 	         *
 	         * @param text
+	         * @return {String}
 	         */
 
 	    }, {
@@ -10629,6 +10667,8 @@ module.exports =
 	            this._input.value = this._input.value.substr(0, cursor_position) + text + this._input.value.substr(cursor_position);
 
 	            this.setInputCaretPosition(cursor_position + this._input.value.length - current_length);
+
+	            return text;
 	        }
 
 	        /**
@@ -10677,6 +10717,19 @@ module.exports =
 	            return _Converters2.default.withUnified().replace_colons(this._input.value);
 	        }
 
+	        /**
+	         * Empty the input's contents.
+	         */
+
+	    }, {
+	        key: "empty",
+	        value: function empty() {
+	            if (this._is_content_editable) {
+	                this._input.innerHTML = "";
+	            } else {
+	                this._input.value = "";
+	            }
+	        }
 	        /**
 	         * Intercepts paste events for contenteditable divs so that we don't get
 	         * any of the special html that gets inserted automatically.
@@ -10745,16 +10798,32 @@ module.exports =
 	                            }
 	            }).join("");
 	        }
+
+	        /**
+	         * Tracks the cursor position and monitors the enter button in case prevent_new_line is true
+	         *
+	         * @returns {EmojiEditor}
+	         * @private
+	         */
+
 	    }, {
 	        key: "_trackCursor",
 	        value: function _trackCursor() {
 	            var _this2 = this;
 
 	            if (this._is_content_editable) {
-	                (0, _jquery2.default)(this._input).off('keyup.emoji').on('keyup.emoji', function () {
+	                (0, _jquery2.default)(this._input).off('keyup.emoji mouseup.emoji').on('keyup.emoji mouseup.emoji', function () {
 	                    _this2.cursor_position = EmojiEditor.saveSelection();
 	                });
+
+	                (0, _jquery2.default)(this._input).off('keydown.emoji').on('keydown.emoji', function (event) {
+	                    if (event.which === 13 && _this2.prevent_new_line) {
+	                        event.preventDefault();
+	                    }
+	                });
 	            }
+
+	            return this;
 	        }
 	        /**
 	         * Extracts the text content from a contenteditable and extracts any spans.
@@ -10826,7 +10895,7 @@ module.exports =
 	    }, {
 	        key: "pasteHtml",
 	        value: function pasteHtml(html) {
-	            EmojiEditor.pasteHtmlAtCaret(html + "&#8203;");
+	            return EmojiEditor.pasteHtmlAtCaret(html + "&#8203;");
 	        }
 	        /**
 	         * saves the position of the cursor in a contenteditable div
@@ -10982,7 +11051,7 @@ module.exports =
 	                        sel.addRange(range);
 	                    }
 
-	                    return last_node;
+	                    return first_node;
 	                }
 	            } else if ((sel = document.selection) && sel.type != "Control") {
 	                // IE < 9
@@ -11188,6 +11257,7 @@ module.exports =
 	            var converter = new _emoji2.default();
 	            converter.init_env();
 	            converter.replace_mode = 'css';
+	            converter.supports_css = true;
 	            return converter;
 	        }
 	    }]);
@@ -13446,6 +13516,8 @@ module.exports =
 	    value: true
 	});
 	exports.default = {
+	    //Sets of categories and icons. The category names are not arbitrary, they map
+	    //to the names of categories in data.js
 	    categories: [{
 	        title: "People",
 	        icon: '<i class="fa fa-smile-o" aria-hidden="true"></i>'
@@ -13469,26 +13541,39 @@ module.exports =
 	        icon: '<i class="fa fa-flag-checkered" aria-hidden="true"></i>'
 	    }],
 
+	    //Show the colon syntax in the preview or don't. It may not make sense if you're
+	    //using a contenteditable element to confuse users with unfamiliar colon syntax
 	    show_colon_preview: true,
 
+	    //If you want your contenteditable to be a single-line input, set this to true
+	    prevent_new_line: false,
+
+	    //The text that will be displayed when no emoji is being hovered over.
 	    default_footer_message: "Please select an emoji from the list above",
 
+	    //Can be "autoplace", "vertical", "horizontal", or a function that takes a tooltip as an argument.
+	    //The tooltip is an instance of the class in this repo here: https://github.com/RobertMenke/Tooltip-js
 	    positioning: "autoplace",
 
+	    //Callback that occurs when an emoji gets selected. You get back Emoji, EmojiCategory, Node
 	    callback: undefined,
-	    //Track content editable cursor by default. If set to false,
-	    //the library will not track the cursor position nor place the emoji
-	    //in the input on selection.
-	    track_ce_cursor: true,
 
+	    //Use sprite sheets to display image emojis rather than links to png files (faster).
+	    //If you want links to the png files see this repo here for examples (library I'm using):
+	    //https://github.com/iamcal/emoji-data
 	    use_sheets: true,
 
+	    //Events that bubble up from Emoji to EmojiPicker - DO NOT MUTATE
+	    //Normally I'd use pubsub here, but didn't feel like writing my own implementation
+	    //or bringing in another dependency for this simple use case.
 	    events: {
 	        SELECTED: "SELECTED",
 	        EMOJI_MOUSEENTER: "MOUSEENTER",
 	        EMOJI_MOUSELEAVE: "MOUSELEAVE"
 	    },
 
+	    //Paths to the sprite sheets (see the sheets folder in this repo. You'll likely
+	    //need to override this setting.
 	    sheets: {
 	        apple: './sheets/sheet_apple_64_indexed_128.png',
 	        google: './sheets/sheet_google_64_indexed_128.png',
@@ -13962,6 +14047,19 @@ module.exports =
 	    key: "getMarkup",
 	    value: function getMarkup() {
 	      return this.$emoji;
+	    }
+
+	    /**
+	     * Gets the html of an emoji for things like pasting
+	     * raw html into the contenteditable.
+	     *
+	     * @return {String}
+	     */
+
+	  }, {
+	    key: "getHtml",
+	    value: function getHtml() {
+	      return this.$emoji.get(0).innerHTML;
 	    }
 
 	    /**
@@ -26919,6 +27017,41 @@ module.exports =
 
 	var H = __webpack_require__(10);
 	module.exports = function() { var T = new H.Template({code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("<div id=\"emoji-picker\"><div class=\"emoji-section emoji-header\">");if(t.s(t.f("categories",c,p,1),c,p,0,78,145,"{{ }}")){t.rs(c,p,function(c,p,t){t.b("<div class=\"select-category\" data-name=\"");t.b(t.v(t.f("title",c,p,0)));t.b("\">");t.b(t.t(t.f("icon",c,p,0)));t.b("</div>");});c.pop();}t.b("</div><div class=\"emoji-section emoji-search\"><div class=\"search-wrapper\"><div class=\"search-section centered\"><i class=\"fa fa-search\" aria-hidden=\"true\"></i></div><div class=\"search-section input\"><input class=\"search-emojis\" placeholder=\"Search\"></div></div></div><div class=\"emoji-title-overlay\"><span id=\"active-title\"></span></div><div class=\"emoji-section emoji-content\"></div><div class=\"emoji-section emoji-footer\"><div class=\"default-content\"><span>");t.b(t.v(t.f("default_content",c,p,0)));t.b("</span></div><div class=\"emoji-preview\"><div class=\"preview-section\" id=\"emoji-large-preview\"></div><div class=\"preview-section\"><span id=\"emoji-name\"></span> <span id=\"colon-display\"></span></div></div></div></div>");return t.fl(); },partials: {}, subs: {  }}, "<div id=\"emoji-picker\"><div class=\"emoji-section emoji-header\">{{#categories}}<div class=\"select-category\" data-name=\"{{title}}\">{{{icon}}}</div>{{/categories}}</div><div class=\"emoji-section emoji-search\"><div class=\"search-wrapper\"><div class=\"search-section centered\"><i class=\"fa fa-search\" aria-hidden=\"true\"></i></div><div class=\"search-section input\"><input class=\"search-emojis\" placeholder=\"Search\"></div></div></div><div class=\"emoji-title-overlay\"><span id=\"active-title\"></span></div><div class=\"emoji-section emoji-content\"></div><div class=\"emoji-section emoji-footer\"><div class=\"default-content\"><span>{{default_content}}</span></div><div class=\"emoji-preview\"><div class=\"preview-section\" id=\"emoji-large-preview\"></div><div class=\"preview-section\"><span id=\"emoji-name\"></span> <span id=\"colon-display\"></span></div></div></div></div>", H);return T.render.apply(T, arguments); };
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	if (typeof Object.assign != 'function') {
+	  Object.assign = function (target, varArgs) {
+	    // .length of function is 2
+	    'use strict';
+
+	    if (target == null) {
+	      // TypeError if undefined or null
+	      throw new TypeError('Cannot convert undefined or null to object');
+	    }
+
+	    var to = Object(target);
+
+	    for (var index = 1; index < arguments.length; index++) {
+	      var nextSource = arguments[index];
+
+	      if (nextSource != null) {
+	        // Skip over if undefined or null
+	        for (var nextKey in nextSource) {
+	          // Avoid bugs when hasOwnProperty is shadowed
+	          if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+	            to[nextKey] = nextSource[nextKey];
+	          }
+	        }
+	      }
+	    }
+	    return to;
+	  };
+	}
 
 /***/ }
 /******/ ]);
