@@ -191,7 +191,8 @@
   display: block;
   position: relative;
   outline: none;
-  border: none; }
+  border: none;
+  margin-top: 1px; }
 
 .search-emojis::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */

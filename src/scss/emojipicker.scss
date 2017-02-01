@@ -146,7 +146,7 @@ $footer_height : 70px;
   display        : table-cell;
   vertical-align : top;
   line-height    : 30px;
-  height : 30px;
+  height         : 30px;
   //width          : calc(100% / 7);
   text-align     : center;
   color          : #555459;
@@ -196,11 +196,11 @@ $footer_height : 70px;
 }
 
 .search-section {
-  position    : relative;
-  display     : inline-block;
-  vertical-align: middle;
-  height      : 100%;
-  line-height : 24px;
+  position       : relative;
+  display        : inline-block;
+  vertical-align : middle;
+  height         : 100%;
+  line-height    : 24px;
 }
 
 .search-section.centered {
@@ -218,27 +218,31 @@ $footer_height : 70px;
 }
 
 .search-emojis {
-  width    : 100%;
-  height   : 85%;
-  font-size: 13px;
-  color     : #555459;
-  display  : block;
-  position : relative;
-  outline  : none;
-  border   : none;
+  width      : 100%;
+  height     : 85%;
+  font-size  : 13px;
+  color      : #555459;
+  display    : block;
+  position   : relative;
+  outline    : none;
+  border     : none;
+  margin-top : 1px;
 }
 
 .search-emojis::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color     : #555459;
+  color : #555459;
 }
+
 .search-emojis::-moz-placeholder { /* Firefox 19+ */
-  color     : #555459;
+  color : #555459;
 }
+
 .search-emojis:-ms-input-placeholder { /* IE 10+ */
-  color     : #555459;
+  color : #555459;
 }
+
 .search-emojis:-moz-placeholder { /* Firefox 18- */
-  color     : #555459;
+  color : #555459;
 }
 
 .emoji-title-overlay {
