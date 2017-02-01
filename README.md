@@ -121,7 +121,7 @@ There are 5 objects that work together to create and manage the emoji picker:
 
 #Future
 
-1. Add frequently used by logging emoji selections into `localStorage`.
+1. Add frequently used category by logging emoji selections into `localStorage`.
 2. Add an options inside of the picker to choose which emoji palette (apple, google, twitter, emojione) to use.
 3. Add an option for skin tones.
 4. Update the dataset to unicode 9 (pending OS support).
