@@ -17,7 +17,7 @@ module.exports = {
         path    : './dist/',
         // path    : './examples/build/',
         filename: '[name].js',
-        libraryTarget : "commonjs2"
+        libraryTarget : "umd"
     },
     // devtool  : '#inline-source-map',
     module   : {
@@ -37,13 +37,14 @@ module.exports = {
         ]
     },
     externals: {
-        "$": "jQuery"
+        "jquery" : "jquery"
+
     },
     plugins  : [
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false
-        //     }
-        // })
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        })
     ]
 };
