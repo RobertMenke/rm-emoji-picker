@@ -113,18 +113,18 @@ This library would not be possible without the help of iamcal/js-emoji https://g
 
 There are 5 objects that work together to create and manage the emoji picker:
 
-1) `EmojiPicker` - Sets up the UI, dispatches events, and works with the Tooltip API for positioning.
-2) `EmojiCategory` - parses data from data.js and creates a pane with emojis and a title. Manages Emoji objects that belong to it.
-3) `Emoji` - parses and makes sense of data for an individual emoji. It creates markup for the emoji display in unicode or as an image. Emoji also sends various events back up to EmojiPicker (hover,click).
-4) `EmojiEditor` - keeps track of the cursor in contenteditable elements, places emoji as an image, characters, or (in the case of textareas & inputs) text emojis using :colon: syntax (like Slack https://get.slack.help/hc/en-us/articles/202931348-Emoji-and-emoticons). 
-5) `Converters` - deals with the iamcal/js-emoji library to convert emojis into a form we can display to users.
+1. `EmojiPicker` - Sets up the UI, dispatches events, and works with the Tooltip API for positioning.
+2. `EmojiCategory` - parses data from data.js and creates a pane with emojis and a title. Manages Emoji objects that belong to it.
+3. `Emoji` - parses and makes sense of data for an individual emoji. It creates markup for the emoji display in unicode or as an image. Emoji also sends various events back up to EmojiPicker (hover,click).
+4. `EmojiEditor` - keeps track of the cursor in contenteditable elements, places emoji as an image, characters, or (in the case of textareas & inputs) text emojis using :colon: syntax (like Slack https://get.slack.help/hc/en-us/articles/202931348-Emoji-and-emoticons). 
+5. `Converters` - deals with the iamcal/js-emoji library to convert emojis into a form we can display to users.
 
 #Future
 
-1) Add frequently used by logging emoji selections into `localStorage`.
-2) Add an options inside of the picker to choose which emoji palette (apple, google, twitter, emojione) to use.
-3) Add an option for skin tones.
-4) Update the dataset to unicode 9 (pending OS support).
+1. Add frequently used by logging emoji selections into `localStorage`.
+2. Add an options inside of the picker to choose which emoji palette (apple, google, twitter, emojione) to use.
+3. Add an option for skin tones.
+4. Update the dataset to unicode 9 (pending OS support).
 
 #Contributing
 
