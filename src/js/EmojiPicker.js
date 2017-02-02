@@ -303,7 +303,7 @@ export default class EmojiPicker {
 
     /**
      * Finds an individual emoji by name. If the category is known
-     * it can be supplied as the second arguent to speed up the search.
+     * it can be supplied as the second argument to speed up the search.
      *
      * @param {String} name
      * @param {EmojiCategory} category
@@ -539,23 +539,23 @@ export default class EmojiPicker {
      *
      * @private
      */
-    _updatePreview(){
+    _updatePreview() {
 
         const emoji = this.active_emoji;
-        if(emoji){
+        if (emoji) {
             this.$default_footer.hide();
             this.$preview_emoji.html(emoji.getPreview());
             this.$preview_name.text(emoji.short_name);
-            if(this.defaults.show_colon_preview){
-                this.$preview_colon.text(emoji.getColons());
-                this.$preview_name.removeClass('name-only');
+            if (this.defaults.show_colon_preview) {
+                this.$preview_colon.text(emoji.getColons());
+                this.$preview_name.removeClass('name-only');
             }
-            else{
-                this.$preview_name.addClass('name-only');
+            else {
+                this.$preview_name.addClass('name-only');
             }
             this.$preview.show();
         }
-        else{
+        else {
             this.$preview.hide();
             this.$default_footer.show();
         }

@@ -67,7 +67,7 @@ export default class EmojiCategory {
                     this._search();
                 }
             }
-        })
+        });
     }
 
     get offset_top (){

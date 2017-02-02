@@ -116,7 +116,8 @@
   background: #F5F5F5;
   display: table;
   table-layout: fixed;
-  width: 100%; }
+  width: 100%;
+  border-bottom: 1px solid #E0E0E0; }
 
 .emoji-header > .select-category {
   position: relative;
@@ -160,7 +161,7 @@
   width: 90%;
   margin: 5px auto;
   color: #000000;
-  border: 1px solid #EEEEEE;
+  border: 1px solid #E0E0E0;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px; }
@@ -237,7 +238,8 @@
   -moz-border-radius-bottomright: 5px;
   -moz-border-radius-bottomleft: 5px;
   border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px; }
+  border-bottom-left-radius: 5px;
+  border-top: 1px solid #E0E0E0; }
 
 .emoji-wrapper {
   position: relative;

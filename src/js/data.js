@@ -3073,30 +3073,30 @@ export default {
       ],
       "sort_order"      : 26
     },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "HASH KEY",
-      "short_name"      : "hash",
-      "short_names"     : [
-        "hash"
-      ],
-      "sort_order"      : 178
-    },
-    {
-      "has_img_apple"   : true,
-      "has_img_google"  : true,
-      "has_img_twitter" : true,
-      "has_img_emojione": true,
-      "name"            : "KEYCAP 0",
-      "short_name"      : "zero",
-      "short_names"     : [
-        "zero"
-      ],
-      "sort_order"      : 134
-    },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "HASH KEY",
+    //   "short_name"      : "hash",
+    //   "short_names"     : [
+    //     "hash"
+    //   ],
+    //   "sort_order"      : 178
+    // },
+    // {
+    //   "has_img_apple"   : true,
+    //   "has_img_google"  : true,
+    //   "has_img_twitter" : true,
+    //   "has_img_emojione": true,
+    //   "name"            : "KEYCAP 0",
+    //   "short_name"      : "zero",
+    //   "short_names"     : [
+    //     "zero"
+    //   ],
+    //   "sort_order"      : 134
+    // },
     // {
     //   "has_img_apple"   : true,
     //   "has_img_google"  : true,

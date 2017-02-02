@@ -13,7 +13,6 @@ module.exports = {
     // devtool : '#inline-source-map',
     cache    : true,
     output   : {
-        // path        : './dist/js',
         path    : './dist/',
         // path    : './examples/build/',
         filename: '[name].js',

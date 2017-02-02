@@ -98,6 +98,9 @@ class Converters {
     static get environment(){
         const converter = new EmojiConvertor();
         converter.init_env();
+        if(converter.replace_mode === 'css'){
+            converter.replace_mode = 'css';
+        }
         return converter;
     }
 

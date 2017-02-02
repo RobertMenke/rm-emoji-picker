@@ -168,6 +168,25 @@ export default class EmojiEditor {
     }
 
     /**
+     * Get all of the child nodes in an input
+     *
+     * @returns {Array<Node>}
+     */
+    getNodes () {
+        return Array.prototype.slice.call(this._input.childNodes);
+    }
+
+    /**
+     * Selects the last node in the input.
+     */
+    selectLastNode(){
+        const nodes = this.getNodes();
+        if(nodes.length){
+            EmojiEditor.selectElement(nodes[nodes.length - 1]);
+        }
+    }
+
+    /**
      * Extracts just text and emojis from a contenteditable element
      *
      * @param {HTMLElement} el
