@@ -1,9 +1,9 @@
 {
-  "name" : "rm-emoji-picker",
+  "name": "rm-emoji-picker",
   "description": "A modular emoji picker written with modern front-end in mind.",
-  "version" : "0.2.3",
+  "version": "0.2.5",
   "dependencies": {
-    "rm-tooltip": "^1.0.4"
+    "rm-tooltip": "^1.0.5"
   },
   "peerDependencies": {
     "jquery": "^3.1.1"
@@ -22,7 +22,7 @@
   "scripts": {
     "start": "webpack --progress --watch",
     "styles": "scss --watch src/scss/emojipicker.scss:dist/emojipicker.css",
-    "build" : "babel --presets es2015 src/js -d dist/"
+    "build": "babel --presets es2015 src/js -d dist/"
   },
-  "main" : "dist/EmojiPicker.js"
+  "main": "dist/EmojiPicker.js"
 }
