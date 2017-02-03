@@ -122,9 +122,12 @@ const picker = new EmojiPicker({
 });
 ```
 
-#Architecture
+#Credit Where Credit Is Due
 
 This library would not be possible without the help of iamcal/js-emoji https://github.com/iamcal/js-emoji and Tim Down, who provided many wonderful Range and Selection answers on stackoverflow http://stackoverflow.com/users/96100/tim-down.
+
+#Architecture
+
 
 There are 5 objects that work together to create and manage the emoji picker:
 
