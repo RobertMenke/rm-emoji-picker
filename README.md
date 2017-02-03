@@ -27,6 +27,21 @@ When you want the text back with emojis in unicode format, just call this method
 ```javascript
 const text = picker.getText();
 ```
+If you want to support windows operating systems, which have embarrassingly poor support for emojis, you'll want to add the sheets parameter to the constructor like this:
+
+```javascript
+const picker = new EmojiPicker({
+    sheets: {
+        apple   : './../sheets/sheet_apple_64_indexed_128.png',
+        google  : './../sheets/sheet_google_64_indexed_128.png',
+        twitter : './../sheets/sheet_twitter_64_indexed_128.png',
+        emojione: './../sheets/sheet_emojione_64_indexed_128.png'
+    }
+});
+```
+
+You can find sheets to use in the sheets folder in this repo.
+
 
 As promised in my "WHY" section, you can configure it to suit your needs.
 

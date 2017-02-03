@@ -1,7 +1,7 @@
 $hover_underline : #4DB6AC; //teal
 $background_secondary : #F5F5F5;
 $background_primary : #FFFFFF;
-$border_color: #E0E0E0;
+$border_color : #E0E0E0;
 $width : 250px;
 $content_height : 300px;
 $footer_height : 70px;
@@ -15,6 +15,7 @@ $footer_height : 70px;
   -moz-box-shadow    : 0 0 15px 0 rgba(50, 50, 50, 0.75);
   box-shadow         : 0 0 15px 0 rgba(50, 50, 50, 0.75);
   max-width          : 300px;
+  z-index            : 99999;
   color              : #000000;
 }
 
@@ -139,7 +140,7 @@ $footer_height : 70px;
   display                         : table;
   table-layout                    : fixed;
   width                           : 100%;
-  border-bottom: 1px solid $border_color;
+  border-bottom                   : 1px solid $border_color;
 }
 
 .emoji-header > .select-category {
@@ -277,7 +278,7 @@ $footer_height : 70px;
   -moz-border-radius-bottomleft      : 5px;
   border-bottom-right-radius         : 5px;
   border-bottom-left-radius          : 5px;
-  border-top:1px solid #E0E0E0;
+  border-top                         : 1px solid #E0E0E0;
 }
 
 .emoji-wrapper {
@@ -291,7 +292,7 @@ $footer_height : 70px;
   display        : inline-block;
   vertical-align : middle;
   padding        : 3px;
-  width          : 26px;
+  width          : 28px;
   font-size      : 22px;
   text-align     : center;
   border-radius  : 4px;

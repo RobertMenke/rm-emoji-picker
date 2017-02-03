@@ -12,7 +12,6 @@ import "./polyfills";
 
 export default class EmojiPicker {
 
-
     /**
      *
      * @param {undefined|Object} options
