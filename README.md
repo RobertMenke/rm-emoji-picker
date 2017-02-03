@@ -32,10 +32,10 @@ If you want to support windows operating systems, which have embarrassingly poor
 ```javascript
 const picker = new EmojiPicker({
     sheets: {
-        apple   : './../sheets/sheet_apple_64_indexed_128.png',
-        google  : './../sheets/sheet_google_64_indexed_128.png',
-        twitter : './../sheets/sheet_twitter_64_indexed_128.png',
-        emojione: './../sheets/sheet_emojione_64_indexed_128.png'
+        apple   : '/sheets/sheet_apple_64_indexed_128.png',
+        google  : '/sheets/sheet_google_64_indexed_128.png',
+        twitter : '/sheets/sheet_twitter_64_indexed_128.png',
+        emojione: '/sheets/sheet_emojione_64_indexed_128.png'
     }
 });
 ```
@@ -54,10 +54,10 @@ const picker = new EmojiPicker({
     //I've included sprite sheets for apple, google, twitter, and emojione emojis in the repo.
     //Feel free to copy those into your web root and provide a path to the files in this option.
     sheets: {
-        apple   : './../sheets/sheet_apple_64_indexed_128.png',
-        google  : './../sheets/sheet_google_64_indexed_128.png',
-        twitter : './../sheets/sheet_twitter_64_indexed_128.png',
-        emojione: './../sheets/sheet_emojione_64_indexed_128.png'
+        apple   : '/sheets/sheet_apple_64_indexed_128.png',
+        google  : '/sheets/sheet_google_64_indexed_128.png',
+        twitter : '/sheets/sheet_twitter_64_indexed_128.png',
+        emojione: '/sheets/sheet_emojione_64_indexed_128.png'
     },
     
     //Show the colon syntax in the preview or don't. It may not make sense if you're
