@@ -1,7 +1,7 @@
 {
   "name": "rm-emoji-picker",
   "description": "A modular emoji picker written with modern front-end in mind.",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "keywords": ["emoji", "javascript", "emoji picker", "es6", "es2015"],
   "license": "MIT",
   "author" : "Robert Menke",
