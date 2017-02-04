@@ -73,6 +73,10 @@ const picker = new EmojiPicker({
     //Can be "autoplace", "vertical", "horizontal", or a function that takes a tooltip as an argument.
     //The tooltip is an instance of the class in this repo here: https://github.com/RobertMenke/Tooltip-js
     positioning: "autoplace",
+    
+    //When the user hovers over the top row of icons, do you want them to be shown
+    //a tooltip indicating which category the icon represents?
+    show_icon_tooltips : true,
 
     //Callback that occurs when an emoji gets selected. You get back Emoji, EmojiCategory, Node
     callback   : function(emoji, category, node){
