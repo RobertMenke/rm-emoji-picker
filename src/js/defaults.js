@@ -49,6 +49,10 @@ export default {
     //Callback that occurs when an emoji gets selected. You get back Emoji, EmojiCategory, Node
     callback       : undefined,
 
+    //When the user hovers over the top row of icons, do you want them to be shown
+    //a tooltip indicating which category the icon represents?
+    show_icon_tooltips : true,
+
     //Use sprite sheets to display image emojis rather than links to png files (faster).
     //If you want links to the png files see this repo here for examples (library I'm using):
     //https://github.com/iamcal/emoji-data

@@ -210,6 +210,11 @@ export default class EmojiEditor {
                 return EmojiEditor._extractSpan(node);
             }
 
+            //Extract codepoints from an image if it was supplied
+            else if(is_html && node.tagName === "IMG"){
+                return EmojiEditor._extractImage(node);
+            }
+
             //Convert br tags to line breaks
             else if(is_html && node.tagName === "BR"){
                 return "\n";
@@ -264,11 +269,46 @@ export default class EmojiEditor {
         //If the span was inserted by the emoji picker, get the codepoints and return the corresponding character
         try {
             const codepoint = $inner.data('codepoints');
-            return String.fromCodePoint(`0x${codepoint}`);
+            return EmojiEditor.parseCodepoints(codepoint);
         }
         catch (err){
             return "";
         }
+    }
+
+    /**
+     * Extracts codepoints from an image if it exists.
+     *
+     * @param {HTMLElement} img
+     * @private
+     */
+    static _extractImage(img){
+        if(img.hasAttribute('data-codepoints')){
+            return EmojiEditor.parseCodepoints(
+                img.getAttribute('data-codepoints')
+            );
+        }
+
+        return "";
+    }
+
+    /**
+     * Parses codepoints that may come in the format
+     * `hex`-`hex` rather than just `hex`
+     *
+     * @param codepoints
+     * @returns {string}
+     */
+    static parseCodepoints(codepoints){
+
+        if(/-/g.test(codepoints)){
+            const arr = codepoints.split("-");
+            const one = `0x${arr[0]}`;
+            const two = `0x${arr[1]}`;
+            return String.fromCodePoint(one,two);
+        }
+
+        return String.fromCodePoint(`0x${codepoints}`);
     }
 
     /**

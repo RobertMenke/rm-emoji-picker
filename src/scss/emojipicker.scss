@@ -5,6 +5,7 @@ $border_color : #E0E0E0;
 $width : 250px;
 $content_height : 300px;
 $footer_height : 70px;
+$success : #81C784;
 
 #emoji-picker {
   position           : absolute;
@@ -447,4 +448,22 @@ span.emoji-inner {
 #emoji-large-preview span.emoji-outer.emoji-sizer {
   width  : 40px;
   height : 40px;
+}
+
+.icon-tooltip {
+  position           : absolute;
+  display            : block;
+  background-color   : #FFFFFF; /*#B0BEC5;*/
+  color              : #000000;
+  border             : 1px solid $hover_underline;
+  height             : auto;
+  width              : auto;
+  padding            : 5px;
+  overflow           : visible;
+  text-align         : center;
+
+  border-radius      : 5px;
+  -webkit-box-shadow : 0 0 3px 0 rgba(50, 50, 50, 0.4);
+  -moz-box-shadow    : 0 0 3px 0 rgba(50, 50, 50, 0.4);
+  box-shadow         : 0 0 3px 0 rgba(50, 50, 50, 0.4);
 }

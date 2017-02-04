@@ -6,6 +6,7 @@ import Tooltip from "rm-tooltip";
 import emojis from "./data";
 import defaults from "./defaults";
 import picker from "./../views/picker.mustache";
+import icon_tooltip from "./../views/icon_tooltip.mustache";
 import "./polyfills";
 
 "use strict";
@@ -161,7 +162,8 @@ export default class EmojiPicker {
 
         this._onScroll()
             ._onCatClick()
-            ._onSearch();
+            ._onSearch()
+            ._setCategoryTooltips();
     }
 
     /**
@@ -415,6 +417,36 @@ export default class EmojiPicker {
         });
 
         return $picker;
+    }
+
+    /**
+     * Sets a helper tooltip on each category's icon
+     *
+     * @returns {EmojiPicker}
+     * @private
+     */
+    _setCategoryTooltips(){
+        //Only proceed if the picker has been initialized and the developer opted to show tooltips
+        if(this.$picker && this.defaults.show_icon_tooltips){
+            //cache an array of category icon wrappers
+            const $cats  = this.$picker.find('.select-category');
+            //Set up a reference to the class instance
+            const picker = this;
+            let tooltip;
+            $cats.off('mouseenter.emoji').on('mouseenter.emoji', /**@this {HTMLElement}*/function(event){
+                //On mouseenter, get the name of the category, then create the tooltip
+                const title = this.getAttribute('data-name');
+                tooltip     = new Tooltip(this, picker.$picker.get(0), $(icon_tooltip({
+                    text: title
+                })));
+
+                tooltip.below();
+            }).off('mouseleave.emoji').on('mouseleave.emoji', () => {
+                tooltip.destroy();
+            });
+        }
+
+        return this;
     }
 
     /**

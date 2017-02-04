@@ -8,7 +8,8 @@
   "repository" : "https://github.com/RobertMenke/rm-emoji-picker",
   "bugs" : "https://github.com/RobertMenke/rm-emoji-picker/issues",
   "dependencies": {
-    "rm-tooltip": "^1.0.5"
+    "rm-tooltip": "^1.0.5",
+    "jquery": "^3.1.1"
   },
   "peerDependencies": {
     "jquery": "^3.1.1"
