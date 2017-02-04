@@ -7,16 +7,16 @@ const glob    = require("glob");
 
 module.exports = {
     entry    : {
-        // EmojiPicker: './src/js/EmojiPicker.js'
-        demo : './examples/src/demo.js'
+        EmojiPicker: './src/js/EmojiPicker.js'
+        // demo : './examples/src/demo.js'
     },
     // devtool : '#inline-source-map',
     cache    : true,
     output   : {
-        // path    : './dist/',
-        path    : './examples/build/',
+        path    : './dist/',
+        // path    : './examples/build/',
         filename: '[name].js',
-        // libraryTarget : "umd"
+        libraryTarget : "umd"
     },
     // devtool  : '#inline-source-map',
     module   : {
@@ -35,15 +35,15 @@ module.exports = {
             }
         ]
     },
-    // externals: {
-    //     "jquery" : "jquery"
-    //
-    // },
+    externals: {
+        "jquery" : "jquery"
+
+    },
     plugins  : [
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false
-        //     }
-        // })
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        })
     ]
 };
