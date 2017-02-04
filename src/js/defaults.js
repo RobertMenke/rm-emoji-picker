@@ -32,6 +32,10 @@ export default {
         }
     ],
 
+    //By default we show an magnifying glass icon in the search container,
+    //but if you're not using fontawesome you may want to include your own icon.
+    search_icon : '<i class="fa fa-search" aria-hidden="true"></i>',
+
     //Show the colon syntax in the preview or don't. It may not make sense if you're
     //using a contenteditable element to confuse users with unfamiliar colon syntax
     show_colon_preview: true,

@@ -6,6 +6,13 @@ I wanted a modern looking emoji picker that worked on all modern browsers (IE 9+
 
 #Usage
 
+Include the css file located at `dist/emojipicker.css` in your html:
+
+```html
+<link href="emojipicker.css" rel="stylesheet" type="text/css" />
+```
+
+Next, import and instantiate the emoji picker, which is a UMD module (thanks webpack!).
 ```javascript
 import EmojiPicker from "rm-emoji-picker";
 
@@ -79,7 +86,7 @@ const picker = new EmojiPicker({
     show_icon_tooltips : true,
 
     //Callback that occurs when an emoji gets selected. You get back Emoji, EmojiCategory, Node
-    callback   : function(emoji, category, node){
+    callback   : (emoji, category, node) => {
         if(node instanceof HTMLELement){
             node.classList.add('emoji-image')
         }
@@ -89,6 +96,11 @@ const picker = new EmojiPicker({
     //If you want links to the png files see this repo here for examples (library I'm using):
     //https://github.com/iamcal/emoji-data
     use_sheets : true,
+    
+    //By default we show an magnifying glass icon in the search container, 
+    // but if you're not using fontawesome you may want to include your own icon.
+    search_icon : '<i class="fa fa-search" aria-hidden="true"></i>',
+    
     //Sets of categories and icons that denote sections at the top of the picker.
     // The category names are not arbitrary, they map to the names of categories in data.js. 
     // By default, I'm assuming you're using FontAwesome because, well, why wouldn't you?! 

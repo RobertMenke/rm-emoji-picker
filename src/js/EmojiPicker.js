@@ -407,7 +407,8 @@ export default class EmojiPicker {
     _getPicker() {
         const $picker = $(picker({
             default_content: defaults.default_footer_message,
-            categories     : this.categories.map(cat => cat.exportContents())
+            categories     : this.categories.map(cat => cat.exportContents()),
+            search_icon    : this.defaults.search_icon
         }));
 
         const $contents = $picker.find('.emoji-content');
