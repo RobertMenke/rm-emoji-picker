@@ -4,6 +4,22 @@ I wanted a modern looking emoji picker that worked on all modern browsers (IE 9+
 
 ![alt tag](https://raw.githubusercontent.com/RobertMenke/rm-emoji-picker/master/examples/rm-emoji-picker.png)
 
+#Installation
+
+The best way to install the library is through npm:
+
+```bash
+npm install rm-emoji-picker
+```
+
+or
+
+```bash
+yarn add rm-emoji-picker
+```
+
+https://www.npmjs.com/package/rm-emoji-picker
+
 #Usage
 
 Include the css file located at `dist/emojipicker.css` in your html:
