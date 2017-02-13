@@ -339,6 +339,14 @@ export default class EmojiPicker {
         }
     }
 
+    /**
+     * Events from EmojiCategory or Emoji bubble up through a callback
+     *
+     * @param action
+     * @param emoji
+     * @param category
+     * @private
+     */
     _dispatchBubble(action, emoji, category){
 
         const events = defaults.events;

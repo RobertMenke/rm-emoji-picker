@@ -141,6 +141,7 @@ $footer_height : 70px;
   table-layout                    : fixed;
   width                           : 100%;
   border-bottom                   : 1px solid $border_color;
+  z-index                         : 1;
 }
 
 .emoji-header > .select-category {
@@ -248,7 +249,7 @@ $footer_height : 70px;
 }
 
 .emoji-title-overlay {
-  height     : 20px;
+  height     : 22px;
   background : #FFFFFF;
   opacity    : 0.95;
   position   : absolute;
@@ -465,4 +466,5 @@ span.emoji-inner {
   -webkit-box-shadow : 0 0 3px 0 rgba(50, 50, 50, 0.4);
   -moz-box-shadow    : 0 0 3px 0 rgba(50, 50, 50, 0.4);
   box-shadow         : 0 0 3px 0 rgba(50, 50, 50, 0.4);
+  z-index            : 2;
 }

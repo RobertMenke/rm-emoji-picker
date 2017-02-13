@@ -14,7 +14,7 @@ $(document).ready(() => {
             twitter : './../sheets/sheet_twitter_64_indexed_128.png',
             emojione: './../sheets/sheet_emojione_64_indexed_128.png'
         },
-        positioning : "autoplace"
+        positioning : "vertical"
     });
     picker.listenOn(icon, container, input);
 

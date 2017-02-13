@@ -118,7 +118,8 @@
   display: table;
   table-layout: fixed;
   width: 100%;
-  border-bottom: 1px solid #E0E0E0; }
+  border-bottom: 1px solid #E0E0E0;
+  z-index: 1; }
 
 .emoji-header > .select-category {
   position: relative;
@@ -213,7 +214,7 @@
   color: #555459; }
 
 .emoji-title-overlay {
-  height: 20px;
+  height: 22px;
   background: #FFFFFF;
   opacity: 0.95;
   position: absolute;
@@ -389,6 +390,7 @@ span.emoji-inner {
   border-radius: 5px;
   -webkit-box-shadow: 0 0 3px 0 rgba(50, 50, 50, 0.4);
   -moz-box-shadow: 0 0 3px 0 rgba(50, 50, 50, 0.4);
-  box-shadow: 0 0 3px 0 rgba(50, 50, 50, 0.4); }
+  box-shadow: 0 0 3px 0 rgba(50, 50, 50, 0.4);
+  z-index: 2; }
 
 /*# sourceMappingURL=emojipicker.css.map */
