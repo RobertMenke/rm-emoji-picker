@@ -175,7 +175,11 @@ export default class EmojiPicker {
     static render(str) {
 
         const converter = Converters.withEnvironment();
-
+        //If the code is running on a mobile device, don't run replace_unified
+        if(Converters.is_mobile){
+            return converter.replace_colons(str);
+        }
+        //Otherwise, make an attempt to replace both colons and unified code.
         return converter.replace_unified(
                converter.replace_colons(
                     str

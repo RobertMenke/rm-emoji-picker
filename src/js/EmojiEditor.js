@@ -183,6 +183,7 @@ export default class EmojiEditor {
         const nodes = this.getNodes();
         if(nodes.length){
             EmojiEditor.selectElement(nodes[nodes.length - 1]);
+            this.cursor_position = EmojiEditor.saveSelection();
         }
     }
 
