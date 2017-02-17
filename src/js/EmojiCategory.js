@@ -141,7 +141,7 @@ export default class EmojiCategory {
             const regexp = new RegExp(this.search_term.toLowerCase());
 
             this.emojis.forEach(emoji => {
-                if(emoji.full_name && regexp.test(emoji.full_name.toLowerCase())){
+                if(emoji.matchesSearchTerm(regexp)){
                    emoji.$emoji.show();
                 }
                 else{
