@@ -1,6 +1,7 @@
 import Converters from "./Converters";
 import $ from "jquery";
 import defaults from "./defaults";
+import "./polyfills";
 
 export default class Emoji {
 
@@ -61,6 +62,11 @@ export default class Emoji {
          * @type {String}
          */
         this.short_name       = data['short_name'];
+
+        /**
+         * @type {String[]}
+         */
+        this.short_names      = data['short_names'];
 
         /**
          * @type {Number}
@@ -206,6 +212,15 @@ export default class Emoji {
     setCallback(callback){
         this._bubble = callback;
         return this;
+    }
+
+    /**
+     *
+     * @param regexp
+     * @returns {undefined|String}
+     */
+    matchesSearchTerm(regexp){
+        return this.short_names.find(name => regexp.test(name));
     }
 
     /**
