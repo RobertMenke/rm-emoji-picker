@@ -64,10 +64,14 @@ export default class EmojiEditor {
                 node = EmojiEditor.pasteHtml(emoji.getHtml());
             }
 
+            $(this._input).trigger('change').trigger('input');
+
             return node;
         }
         else{
-            return this.pasteInputText(emoji.getColons());
+            var ret = this.pasteInputText(emoji.getColons());
+            $(this._input).trigger('change').trigger('input');
+            return ret;
         }
     }
 
