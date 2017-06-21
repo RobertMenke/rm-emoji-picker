@@ -1,10 +1,10 @@
-#Why This Emoji Picker?
+# Why This Emoji Picker?
 
 I wanted a modern looking emoji picker that worked on all modern browsers (IE 9+), gave me the flexibility to control what happens when an emoji is clicked, came with support for contenteditable elements, and didn't deal with the horrible :colon: syntax we've forced on users that just want to see a smiley face!
 
 ![alt tag](https://raw.githubusercontent.com/RobertMenke/rm-emoji-picker/master/examples/rm-emoji-picker.png)
 
-#Installation
+# Installation
 
 The best way to install the library is through npm:
 
@@ -20,7 +20,7 @@ yarn add rm-emoji-picker
 
 https://www.npmjs.com/package/rm-emoji-picker
 
-#Usage
+# Usage
 
 Include the css file located at `dist/emojipicker.css` in your html:
 
@@ -50,6 +50,13 @@ When you want the text back with emojis in unicode format, just call this method
 ```javascript
 const text = picker.getText();
 ```
+
+If you want to render text with emojis, call this static method (works with colon syntax or unicode):
+
+```javascript
+const emoji_text = EmojiPicker.render('lol! :laughing:')
+```
+
 If you want to support windows operating systems, which have embarrassingly poor support for emojis, you'll want to add the sheets parameter to the constructor like this:
 
 ```javascript
@@ -154,11 +161,11 @@ const picker = new EmojiPicker({
 });
 ```
 
-#Credit Where Credit Is Due
+# Credit Where Credit Is Due
 
 This library would not be possible without the help of iamcal/js-emoji https://github.com/iamcal/js-emoji and Tim Down, who provided many wonderful Range and Selection answers on stackoverflow http://stackoverflow.com/users/96100/tim-down.
 
-#Architecture
+# Architecture
 
 
 There are 5 objects that work together to create and manage the emoji picker:
@@ -169,13 +176,14 @@ There are 5 objects that work together to create and manage the emoji picker:
 4. `EmojiEditor` - keeps track of the cursor in contenteditable elements, places emoji as an image, characters, or (in the case of textareas & inputs) text emojis using :colon: syntax (like Slack https://get.slack.help/hc/en-us/articles/202931348-Emoji-and-emoticons). 
 5. `Converters` - deals with the iamcal/js-emoji library to convert emojis into a form we can display to users.
 
-#Future
+# Future
 
 1. Add frequently used category by logging emoji selections into `localStorage`.
 2. Add an options inside of the picker to choose which emoji palette (apple, google, twitter, emojione) to use.
 3. Add an option for skin tones.
 4. Update the dataset to unicode 9 (pending OS support).
+5. Update code with flow types and typescript definitions.
 
-#Contributing
+# Contributing
 
 Pull requests are welcome! The best way to get in touch with me is through a github issue.
