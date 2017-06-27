@@ -1,4 +1,4 @@
-import EmojiConvertor from "./../../non_npm_dependencies/iamcal_js_emoji/lib/emoji";
+import EmojiConvertor from "emoji-js";
 import defaults from "./defaults";
 
 "use strict";

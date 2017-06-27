@@ -21,8 +21,10 @@ export default class EmojiEditor {
         /**
          * @type {Boolean}
          * @private
+         * this._is_content_editable = input.isContentEditable;
+         * IE11 marks textareas as contenteditable (!)
          */
-        this._is_content_editable = input.isContentEditable;
+        this._is_content_editable = !(input.nodeName == 'INPUT' || input.nodeName == 'TEXTAREA');
 
         /**
          *
@@ -48,7 +50,6 @@ export default class EmojiEditor {
      * @param {Emoji} emoji
      */
     placeEmoji(emoji){
-
         this._input.focus();
         if(this.cursor_position){
             EmojiEditor.restoreSelection(this.cursor_position);
