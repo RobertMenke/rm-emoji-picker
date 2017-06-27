@@ -21,10 +21,8 @@ export default class EmojiEditor {
         /**
          * @type {Boolean}
          * @private
-         * this._is_content_editable = input.isContentEditable;
-         * IE11 marks textareas as contenteditable (!)
          */
-        this._is_content_editable = !(input.nodeName == 'INPUT' || input.nodeName == 'TEXTAREA');
+        this._is_content_editable = this.isContentEditable(input);
 
         /**
          *
@@ -42,6 +40,16 @@ export default class EmojiEditor {
         this._onPaste();
     }
 
+    /**
+     * Check if an input element is contenteditable.
+     *
+     * (IE11 marks textareas as contenteditable (!))
+     * @param {HTMLElement|HTMLTextAreaElement|HTMLInputElement} element
+     */
+    isContentEditable (element) {
+         const tag = element.nodeName
+         return element.isContentEditable && tag !== "INPUT" && tag !== "TEXTAREA"
+    }
 
     /**
      * Pastes an emoji at the caret taking into account whether the element
