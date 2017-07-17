@@ -1,7 +1,7 @@
 {
-  "name": "rm-emoji-picker",
+  "name": "rm-emoji-picker-fork",
   "description": "A modular emoji picker written with modern front-end in mind.",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "keywords": [
     "emoji",
     "emoji-picker",
@@ -13,8 +13,8 @@
   ],
   "license": "MIT",
   "author": "Robert Menke",
-  "repository": "https://github.com/RobertMenke/rm-emoji-picker",
-  "bugs": "https://github.com/RobertMenke/rm-emoji-picker/issues",
+  "repository": "https://github.com/hodovanyuk/rm-emoji-picker",
+  "bugs": "https://github.com/hodovanyuk/rm-emoji-picker/issues",
   "dependencies": {
     "rm-tooltip": "^1.0.5"
   },
