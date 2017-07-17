@@ -54,6 +54,19 @@
   -moz-box-shadow: 2px 2px 2px 0 rgba(50, 50, 50, 0.3);
   box-shadow: 2px 2px 2px 0 rgba(50, 50, 50, 0.3); }
 
+#emoji-picker.TooltipBelow:after {
+  top: -7px;
+  bottom: auto;
+  height: 14px;
+  width: 14px;
+  left: calc(50% - 7px);
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  background: #F5F5F5;
+  -webkit-box-shadow: -1px -1px 2px -1px rgba(50, 50, 50, 0.4);
+  -moz-box-shadow: -1px -1px 2px -1px rgba(50, 50, 50, 0.4);
+  box-shadow: -1px -1px 2px -1px rgba(50, 50, 50, 0.4); }
+
 #emoji-picker.autoplace:after {
   background: #F5F5F5; }
 
@@ -72,6 +85,18 @@
 #emoji-picker.TooltipRight.TooltipAbove.autoplace:after {
   right: 30px;
   left: auto; }
+
+#emoji-picker.TooltipLeft.TooltipBelow.autoplace:after, .TooltipRight.TooltipBelow.autoplace:after {
+  top: -7px;
+  bottom: auto;
+  border: none;
+  -webkit-box-shadow: -1px -1px 2px -1px rgba(50, 50, 50, 0.4);
+  -moz-box-shadow: -1px -1px 2px -1px rgba(50, 50, 50, 0.4);
+  box-shadow: -1px -1px 2px -1px rgba(50, 50, 50, 0.4); }
+
+#emoji-picker.TooltipLeft.TooltipBelow.autoplace:after {
+  left: 30px;
+  right: auto; }
 
 #emoji-picker.TooltipRight.TooltipBelow.autoplace:after {
   right: 30px;
