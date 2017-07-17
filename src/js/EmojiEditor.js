@@ -78,7 +78,7 @@ export default class EmojiEditor {
             return node;
         }
         else{
-            var ret = this.pasteInputText(emoji.getColons());
+            var ret = this.pasteInputText(emoji.getCharacter());
             $(this._input).trigger('change').trigger('input');
             return ret;
         }
