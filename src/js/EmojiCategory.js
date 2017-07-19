@@ -24,6 +24,7 @@ export default class EmojiCategory {
          * @type {string}
          */
         this.title      = category.title;
+        this.titleTranslate      = category.titleTranslate;
 
         /**
          *
@@ -49,6 +50,7 @@ export default class EmojiCategory {
          * @type {jQuery}
          */
         this.$title     = this.$category.find('.category-title');
+        this.$titleTrsanlate     = this.$category.find('.category-titleTranslate');
 
         /**
          * Callback that executes when an emoji gets selected
@@ -82,7 +84,8 @@ export default class EmojiCategory {
     exportContents() {
         return {
             title  : this.title,
-            icon   : this.icon
+            icon   : this.icon,
+            titleTranslate: this.titleTranslate || this.title
         }
     }
 
@@ -92,7 +95,8 @@ export default class EmojiCategory {
         }
 
         const $category = $(category({
-            title : this.title
+            title : this.title,
+            titleTranslate: this.titleTranslate || this.title
         }));
 
         const $content = $category.find('.category-content');

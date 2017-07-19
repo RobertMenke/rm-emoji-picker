@@ -1,7 +1,7 @@
 <div id = "emoji-picker">
     <div class = "emoji-section emoji-header">
         {{#categories}}
-            <div class = "select-category" data-name="{{title}}">
+            <div class = "select-category" data-name="{{titleTranslate}}">
                 {{{icon}}}
             </div>
         {{/categories}}
@@ -12,12 +12,9 @@
                 {{{search_icon}}}
             </div>
             <div class = "search-section input">
-                <input type="text" class = "search-emojis" placeholder="Search"/>
+                <input type="text" class = "search-emojis" placeholder="{{search_placeholder}}"/>
             </div>
         </div>
-    </div>
-    <div class = "emoji-title-overlay">
-        <span id = "active-title"></span>
     </div>
     <div class = "emoji-section emoji-content"></div>
     <div class = "emoji-section emoji-footer">
