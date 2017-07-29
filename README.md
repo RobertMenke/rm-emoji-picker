@@ -186,4 +186,6 @@ There are 5 objects that work together to create and manage the emoji picker:
 
 # Contributing
 
+To get the project up and running locally, follow the instructions here https://github.com/RobertMenke/rm-emoji-picker/wiki/Build-Instructions.
+
 Pull requests are welcome! The best way to get in touch with me is through a github issue.
