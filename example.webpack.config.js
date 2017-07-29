@@ -3,7 +3,7 @@
  */
 const webpack       = require( "webpack" )
 const glob          = require( "glob" )
-const build_example = false
+const build_example = true
 const is_production = true
 
 const example_entry = {

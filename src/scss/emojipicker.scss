@@ -254,8 +254,8 @@ $footer_height : 70px;
   opacity    : 0.95;
   position   : absolute;
   display    : block;
-  width      : 100%;
   z-index    : 3;
+  width      : calc(100% - 15px);
 }
 
 .emoji-title-overlay > #active-title {
