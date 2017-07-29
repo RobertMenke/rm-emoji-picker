@@ -125,10 +125,11 @@ export default class EmojiPicker {
             set : value => {
                 if(value !== _open){
                     _open = value;
-                    if(_open){
-                        this.openPicker();
-                    }
-                    else{
+                    //Used to call this.openPicker() when _open was true, but there was a reference error bug in
+                    //this issue https://github.com/RobertMenke/rm-emoji-picker/issues/27
+                    //I need to pass the click event to this.openPicker so for now we'll only handle
+                    //Closing the picker in this setter
+                    if(!_open){
                         this.$picker.detach();
                     }
                 }
@@ -217,7 +218,7 @@ export default class EmojiPicker {
      *
      * @returns {EmojiPicker}
      */
-    openPicker() {
+    openPicker(event) {
 
         const tooltip = new Tooltip(this._icon, this._container, this.$picker);
         tooltip.center();
@@ -486,6 +487,9 @@ export default class EmojiPicker {
     _onIconClick() {
 
         $(this._icon).off('click.emoji').on('click.emoji', event => {
+            if(!this.picker_open) {
+                this.openPicker(event);
+            }
             this.picker_open = !this.picker_open;
         });
 

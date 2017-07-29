@@ -77,11 +77,10 @@ export default class EmojiEditor {
 
             return node;
         }
-        else{
-            var ret = this.pasteInputText(emoji.getColons());
-            $(this._input).trigger('change').trigger('input');
-            return ret;
-        }
+
+        const text = this.pasteInputText(emoji.getColons());
+        $(this._input).trigger('change').trigger('input'); //triggers change & input events since we're doing this manually
+        return text;
     }
 
 
@@ -370,13 +369,13 @@ export default class EmojiEditor {
      *
      * Credit goes to Tim Down here
      *
-     * @returns {Range|null}
+     * @returns {TextRange|Range|null}
      */
     static saveSelection(){
         if(window.getSelection){
             const sel = window.getSelection();
             if(sel.getRangeAt && sel.rangeCount){
-                return  sel.getRangeAt(0);
+                return sel.getRangeAt(0);
             }
         }
         else if(document.selection && document.selection.createRange){
