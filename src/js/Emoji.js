@@ -143,10 +143,8 @@ export default class Emoji {
     getCharacter() {
         const codepoints = this.getCodepoints();
         if(/-/g.test(codepoints)){
-            const arr = codepoints.split("-");
-            const one = `0x${arr[0]}`;
-            const two = `0x${arr[1]}`;
-            return String.fromCodePoint(one,two);
+            const arr = codepoints.split("-").map(str => `0x${str}`);
+            return String.fromCodePoint(...arr);
         }
         return String.fromCodePoint(`0x${codepoints}`);
     }
