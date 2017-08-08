@@ -1,7 +1,7 @@
 {
   "name": "rm-emoji-picker",
   "description": "A modular emoji picker written with modern front-end in mind.",
-  "version": "0.3.20",
+  "version": "0.3.30",
   "keywords": [
     "emoji",
     "emoji-picker",
