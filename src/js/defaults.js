@@ -3,31 +3,31 @@ export default {
     //to the names of categories in data.js
     categories: [
         {
-            title: "People",
+            title: "Menschen",
             icon : '<i class="fa fa-smile-o" aria-hidden="true"></i>'
         },
         {
-            title: "Nature",
+            title: "Natur",
             icon : '<i class="fa fa-leaf" aria-hidden="true"></i>'
         },
         {
-            title: "Foods",
+            title: "Essen",
             icon : '<i class="fa fa-cutlery" aria-hidden="true"></i>'
         },
         {
-            title: "Activity",
+            title: "Aktivitäten",
             icon : '<i class="fa fa-futbol-o" aria-hidden="true"></i>'
         },
         {
-            title: "Places",
+            title: "Orte",
             icon : '<i class="fa fa-globe" aria-hidden="true"></i>'
         },
         {
-            title: "Symbols",
+            title: "Symbole",
             icon : '<i class="fa fa-lightbulb-o" aria-hidden="true"></i>'
         },
         {
-            title: "Flags",
+            title: "Flaggen",
             icon : '<i class="fa fa-flag-checkered" aria-hidden="true"></i>'
         }
     ],

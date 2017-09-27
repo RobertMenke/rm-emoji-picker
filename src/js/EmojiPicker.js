@@ -549,7 +549,7 @@ export default class EmojiPicker {
         this.$search.off('input.emoji').on('input.emoji', () => {
             const search = this.$search.val().trim();
             this.categories.forEach(cat => cat.search_term = search);
-            this.$active_title.text(`Results for: ${search}`);
+            this.$active_title.text(`Ergebnisse für: ${search}`);
             if(search.length === 0){
                 this.active_category = this._getActiveCategory();
                 //Manually call this in case the category hadn't changed since the search started

@@ -1,5 +1,5 @@
 export default {
-  "Symbols" : [
+  "Symbole" : [
     {
       "has_img_apple"   : true,
       "has_img_google"  : true,
@@ -5350,7 +5350,7 @@ export default {
       "sort_order"      : 45
     }
   ],
-  "Nature"  : [
+  "Natur"  : [
     {
       "has_img_apple"   : true,
       "has_img_google"  : true,
@@ -7126,7 +7126,7 @@ export default {
       "sort_order"      : 30
     }
   ],
-  "Foods"   : [
+  "Essen"   : [
     {
       "has_img_apple"   : true,
       "has_img_google"  : true,
@@ -7932,7 +7932,7 @@ export default {
       "sort_order"      : 21
     }
   ],
-  "People"  : [
+  "Menschen"  : [
     {
       "has_img_apple"   : true,
       "has_img_google"  : true,
@@ -10396,7 +10396,7 @@ export default {
       "sort_order"      : 159
     }
   ],
-  "Places"  : [
+  "Orte"  : [
     {
       "has_img_apple"   : true,
       "has_img_google"  : true,
@@ -11780,7 +11780,7 @@ export default {
       "sort_order"      : 45
     }
   ],
-  "Activity": [
+  "Aktivitäten": [
     {
       "has_img_apple"   : true,
       "has_img_google"  : true,
@@ -12466,7 +12466,7 @@ export default {
       "sort_order"      : 25
     }
   ],
-  "Flags"   : [
+  "Flaggen"   : [
     {
       "has_img_apple"   : true,
       "has_img_google"  : true,
