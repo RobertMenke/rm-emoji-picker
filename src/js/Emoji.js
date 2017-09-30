@@ -1,88 +1,81 @@
-import Converters from "./Converters";
-import $ from "jquery";
-import defaults from "./defaults";
-import "./polyfills";
+import Converters from "./Converters"
+import defaults from "./defaults"
+import { getRandomColor } from "./utils"
+import "./polyfills"
 
 export default class Emoji {
 
-    static factory(data, category, callback){
-        const emoji = new Emoji(data, category);
-        emoji.setCallback(callback);
-        return emoji;
-    }
-
-    static get random_color (){
-        const colors = ["blue", "yellow", "green", "orange", "indigo", "pink"];
-        return colors[Emoji.randomIntFromInterval(0, colors.length - 1)];
-    }
-
-    /**
-     * @link http://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
-     * @param min
-     * @param max
-     * @returns {number}
-     */
-    static randomIntFromInterval(min,max) {
-        return Math.floor(Math.random()*(max-min+1)+min);
-    }
+    has_apple_img : boolean
+    has_google_img : boolean
+    has_twitter_img : boolean
+    has_emojione_img : boolean
+    category : string
+    full_name : string
+    short_name : string
+    short_names : Array<string>
+    sort_order : number
+    hover_color : string
+    bubble : ?Function
+    emoji : DocumentFragment
+    
 
     constructor(data, category){
 
         /**
          * @type {Boolean}
          */
-        this.has_apple_img    = data['has_img_apple'];
+        this.has_apple_img    = data['has_img_apple']
 
         /**
          * @type {Boolean}
          */
-        this.has_google_img   = data['has_img_google'];
+        this.has_google_img   = data['has_img_google']
 
         /**
          * @type {Boolean}
          */
-        this.has_twitter_img  = data['has_img_twitter'];
+        this.has_twitter_img  = data['has_img_twitter']
 
         /**
          * @type {Boolean}
          */
-        this.has_emojione_img = data['has_img_emojione'];
+        this.has_emojione_img = data['has_img_emojione']
 
         /**
          * @type {String} - the name of the category
          */
-        this.category         = category;
+        this.category         = category
 
         /**
          * @type {String}
          */
-        this.full_name        = data['name'];
+        this.full_name        = data['name']
 
         /**
          * @type {String}
          */
-        this.short_name       = data['short_name'];
+        this.short_name       = data['short_name']
 
         /**
          * @type {String[]}
          */
-        this.short_names      = data['short_names'];
+        this.short_names      = data['short_names']
 
         /**
          * @type {Number}
          */
-        this.sort_order       = data['sort_order'];
+        this.sort_order       = data['sort_order']
 
         /**
          * @type {String}
          */
-        this.hover_color      = Emoji.random_color;
+        this.hover_color      = getRandomColor()
 
         /**
          * Gets the emoji for the
          * @type {string}
          */
-        this.$emoji           = this.getEmojiForPlatform();
+        this.emoji           = this.getEmojiForPlatform()
 
         /**
          * Callback executed when the emoji was clicked
@@ -90,10 +83,16 @@ export default class Emoji {
          * @type {Function|undefined}
          * @private
          */
-        this._bubble        = undefined;
+        this._bubble        = undefined
         //Set a click listener on the emoji
         this._onClick()
-            ._onHover();
+            ._onHover()
+    }
+
+    static factory(data, category, callback){
+        const emoji = new Emoji(data, category)
+        emoji.setCallback(callback)
+        return emoji
     }
 
     /**
@@ -102,7 +101,7 @@ export default class Emoji {
      * @returns {string}
      */
     getColons () {
-        return `:${this.short_name}:`;
+        return `:${this.short_name}:`
     }
 
     /**
@@ -111,7 +110,7 @@ export default class Emoji {
      * @returns {string}
      */
     getUnified () {
-        return Converters.withUnified().replace_colons(this.getColons());
+        return Converters.withUnified().replace_colons(this.getColons())
     }
 
     /**
@@ -120,19 +119,15 @@ export default class Emoji {
      * @returns {string}
      */
     getImage () {
-        return Converters.withImage().replace_colons(this.getColons());
+        return Converters.withImage().replace_colons(this.getColons())
     }
 
     /**
      * @return {String} Codepoints for the emoji
      */
-    getCodepoints (){
-        const $image = $(this.getImage());
-        if($image.hasClass('emoji-inner')){
-            return $image.data('codepoints');
-        }
-
-        return $image.find('.emoji-inner').data('codepoints');
+    getCodepoints () : string {
+        const character = this.getCharacter()
+        return character.codePointAt(0)
     }
 
     /**
@@ -141,12 +136,12 @@ export default class Emoji {
      * @returns {string}
      */
     getCharacter() {
-        const codepoints = this.getCodepoints();
+        const codepoints = this.getCodepoints()
         if(/-/g.test(codepoints)){
-            const arr = codepoints.split("-").map(str => `0x${str}`);
-            return String.fromCodePoint(...arr);
+            const arr = codepoints.split("-").map(str => `0x${str}`)
+            return String.fromCodePoint(...arr)
         }
-        return String.fromCodePoint(`0x${codepoints}`);
+        return String.fromCodePoint(`0x${codepoints}`)
     }
 
     /**
@@ -155,50 +150,49 @@ export default class Emoji {
      * @returns {boolean}
      */
     static supportsUnified (){
-        return Converters.withEnvironment().replace_mode === "unified";
+
+        return Converters.withEnvironment().replace_mode === "unified"
     }
 
     /**
      * Gets the platform-appropriate representation of the emoji.
      *
-     * @return {string|jQuery}
+     * @return {DocumentFragment}
      */
-    getEmojiForPlatform(){
+    getEmojiForPlatform() : DocumentFragment {
 
         const emote = Converters.withEnvironment()
-                                .replace_colons(this.getColons());
+                                .replace_colons(this.getColons())
 
-        return this._getWrapper().append(emote);
+        const fragment = this._getWrapper()
+        fragment.firstChild.innerHTML = emote
+
+        return fragment
+        // return this._getWrapper().append(emote)
     }
 
     /**
      *
      * @returns {*}
      */
-    getPreview(){
+    getPreview() : DocumentFragment {
         const emote = Converters.withEnvironment()
-                                .replace_colons(this.getColons());
+                                .replace_colons(this.getColons())
 
-        return this._getPreviewWrapper().append(emote);
+        const fragment = this._getPreviewWrapper()
+        fragment.firstChild.innerHTML = emote
+
+        return fragment
+        // return this._getPreviewWrapper().appendChild(emote)
     }
 
     /**
      * Getter for the class' markup
      *
-     * @returns {string}
+     * @returns {DocumentFragment}
      */
-    getMarkup() {
-        return this.$emoji;
-    }
-
-    /**
-     * Gets the html of an emoji for things like pasting
-     * raw html into the contenteditable.
-     *
-     * @return {String}
-     */
-    getHtml() {
-        return this.$emoji.get(0).innerHTML;
+    getFragment() : DocumentFragment {
+        return this.emoji
     }
 
     /**
@@ -208,8 +202,8 @@ export default class Emoji {
      * @returns {Emoji}
      */
     setCallback(callback){
-        this._bubble = callback;
-        return this;
+        this._bubble = callback
+        return this
     }
 
     /**
@@ -218,27 +212,43 @@ export default class Emoji {
      * @returns {undefined|String}
      */
     matchesSearchTerm(regexp){
-        return this.short_names.find(name => regexp.test(name));
+        return this.short_names.find(name => regexp.test(name))
     }
 
     /**
      * Gets the wrapper for the emoji
      *
-     * @returns {jQuery|HTMLElement}
+     * @returns {DocumentFragment}
      * @private
      */
-    _getWrapper(){
-        return $(`<span class = "emoji-char-wrapper ${this.hover_color}" data-name="${this.full_name}" data-category="${this.category}"></span>`);
+    _getWrapper() : DocumentFragment {
+        const fragment = document.createDocumentFragment()
+        const span     = document.createElement( 'span' )
+        span.className = `emoji-char-wrapper ${this.hover_color}`
+        span.setAttribute( 'data-name', this.full_name )
+        span.setAttribute( 'data-category', this.category )
+        fragment.appendChild( span )
+
+        return fragment
+        // return $(`<span class = "emoji-char-wrapper ${this.hover_color}" data-name="${this.full_name}" data-category="${this.category}"></span>`)
     }
 
     /**
      * Gets the wrapper for the preview
      *
-     * @returns {jQuery|HTMLElement}
+     * @returns {DocumentFragment}
      * @private
      */
-    _getPreviewWrapper(){
-        return $(`<span class = "emoji-preview-wrapper ${this.hover_color}" data-name="${this.full_name}" data-category="${this.category}"></span>`);
+    _getPreviewWrapper() : DocumentFragment {
+        const fragment = document.createDocumentFragment()
+        const span     = document.createElement( 'span' )
+        span.className = `emoji-preview-wrapper ${this.hover_color}`
+        span.setAttribute( 'data-name', this.full_name )
+        span.setAttribute( 'data-category', this.category )
+        fragment.appendChild( span )
+
+        return fragment
+        // return $(`<!--<span class = "emoji-preview-wrapper ${this.hover_color}" data-name="${this.full_name}" data-category="${this.category}"></span>-->`)
     }
 
     /**
@@ -247,13 +257,13 @@ export default class Emoji {
      * @private
      */
     _onClick(){
-        $(this.$emoji).off('click.emoji').on('click.emoji', event => {
+        this.emoji.addEventListener('click', (event : MouseEvent) => {
             if(this._bubble){
-                this._bubble(defaults.events.SELECTED, this);
+                this._bubble(defaults.events.SELECTED, this)
             }
-        });
+        })
 
-        return this;
+        return this
     }
 
     /**
@@ -262,12 +272,18 @@ export default class Emoji {
      * @private
      */
     _onHover () {
-        $(this.$emoji).off('mouseenter.emoji').on('mouseenter.emoji', () => {
-            this._bubble(defaults.events.EMOJI_MOUSEENTER, this);
-        }).off('mouseleave.emoji').on('mouseleave.emoji', () => {
-            this._bubble(defaults.events.EMOJI_MOUSELEAVE, this);
-        });
+        this.emoji.addEventListener('mouseenter', () => {
+            if(this._bubble) {
+                this._bubble(defaults.events.EMOJI_MOUSEENTER, this)
+            }
+        })
 
-        return this;
+        this.emoji.addEventListener('mouseleave', () => {
+            if(this._bubble) {
+                this._bubble(defaults.events.EMOJI_MOUSELEAVE, this)
+            }
+        })
+
+        return this
     }
 }
