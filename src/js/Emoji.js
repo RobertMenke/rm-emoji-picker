@@ -1,6 +1,6 @@
-import Converters from "./Converters"
+import { imageConverter, unicodeConverter } from "./converters"
 import defaults from "./defaults"
-import { getRandomColor } from "./utils"
+import { getRandomColor, getCodepointsFromString } from "./utils"
 import "./polyfills"
 
 export default class Emoji {
@@ -15,7 +15,7 @@ export default class Emoji {
     short_names : Array<string>
     sort_order : number
     hover_color : string
-    bubble : ?Function
+    _bubble : ?Function
     emoji : DocumentFragment
     
 
@@ -110,7 +110,7 @@ export default class Emoji {
      * @returns {string}
      */
     getUnified () {
-        return Converters.withUnified().replace_colons(this.getColons())
+        return unicodeConverter.replace_colons(this.getColons())
     }
 
     /**
@@ -119,15 +119,15 @@ export default class Emoji {
      * @returns {string}
      */
     getImage () {
-        return Converters.withImage().replace_colons(this.getColons())
+        return imageConverter.replace_colons(this.getColons())
     }
 
     /**
      * @return {String} Codepoints for the emoji
      */
-    getCodepoints () : string {
+    getCodepoints () : Array<number> {
         const character = this.getCharacter()
-        return character.codePointAt(0)
+        return getCodepointsFromString(character)
     }
 
     /**
@@ -136,23 +136,9 @@ export default class Emoji {
      * @returns {string}
      */
     getCharacter() {
-        const codepoints = this.getCodepoints()
-        if(/-/g.test(codepoints)){
-            const arr = codepoints.split("-").map(str => `0x${str}`)
-            return String.fromCodePoint(...arr)
-        }
-        return String.fromCodePoint(`0x${codepoints}`)
+        return this.getUnified()
     }
 
-    /**
-     * Determines if the environment supports unified unicode.
-     *
-     * @returns {boolean}
-     */
-    static supportsUnified (){
-
-        return Converters.withEnvironment().replace_mode === "unified"
-    }
 
     /**
      * Gets the platform-appropriate representation of the emoji.
@@ -161,8 +147,7 @@ export default class Emoji {
      */
     getEmojiForPlatform() : DocumentFragment {
 
-        const emote = Converters.withEnvironment()
-                                .replace_colons(this.getColons())
+        const emote = imageConverter.replace_colons(this.getColons())
 
         const fragment = this._getWrapper()
         fragment.firstChild.innerHTML = emote
@@ -176,8 +161,7 @@ export default class Emoji {
      * @returns {*}
      */
     getPreview() : DocumentFragment {
-        const emote = Converters.withEnvironment()
-                                .replace_colons(this.getColons())
+        const emote = imageConverter.replace_colons(this.getColons())
 
         const fragment = this._getPreviewWrapper()
         fragment.firstChild.innerHTML = emote
@@ -186,13 +170,24 @@ export default class Emoji {
         // return this._getPreviewWrapper().appendChild(emote)
     }
 
+    getElement () : HTMLElement {
+        return this.emoji.firstChild
+    }
+
+    getElementCopy () : HTMLElement {
+        return this.emoji.cloneNode(true).firstChild
+    }
+
     /**
      * Getter for the class' markup
      *
      * @returns {DocumentFragment}
      */
-    getFragment() : DocumentFragment {
-        return this.emoji
+    getEditableFragment() : DocumentFragment {
+        const spacer   = document.createTextNode("&#8203")
+        const fragment = this.emoji.cloneNode(true)
+        fragment.appendChild(spacer)
+        return fragment
     }
 
     /**
@@ -213,6 +208,14 @@ export default class Emoji {
      */
     matchesSearchTerm(regexp){
         return this.short_names.find(name => regexp.test(name))
+    }
+
+    show () {
+        this.emoji.firstChild.styles.display = "none"
+    }
+
+    hide () {
+        this.emoji.firstChild.styles.display = "inline-block"
     }
 
     /**
@@ -257,7 +260,7 @@ export default class Emoji {
      * @private
      */
     _onClick(){
-        this.emoji.addEventListener('click', (event : MouseEvent) => {
+        this.emoji.addEventListener('click', () => {
             if(this._bubble){
                 this._bubble(defaults.events.SELECTED, this)
             }

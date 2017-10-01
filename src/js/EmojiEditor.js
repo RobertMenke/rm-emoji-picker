@@ -1,6 +1,5 @@
 "use strict"
-import $ from "jquery"
-import Converters from "./Converters"
+import { envConverter, unicodeConverter } from "./converters"
 import {
     selectElementContents,
     pasteHtmlAtCaret,
@@ -9,9 +8,10 @@ import {
     pasteTextAtCaret,
     dispatchEvents,
     restoreSelection,
-    parseCodepoints,
+    parseStringCodepoints,
     isContentEditable
 } from "./utils"
+import Emoji from "./Emoji"
 
 
 export default class EmojiEditor {
@@ -52,37 +52,31 @@ export default class EmojiEditor {
     }
 
     /**
-     * Pastes an emoji at the caret taking into account whether the element
-     * is contenteditable or not.
+     * Pastes an emoji at the caret.
      *
      * @param {Emoji} emoji
      */
-    placeEmoji(emoji){
+    placeEmoji(emoji : Emoji) {
         this._input.focus()
         if(this.cursor_position){
             restoreSelection(this.cursor_position)
         }
 
         if(this._is_content_editable){
-            let node
-            if(EmojiEditor.supportsUnified()){
-                node = pasteTextAtCaret(emoji.getCharacter())
-                selectElement(node)
-                this.cursor_position = saveSelection()
-            }
-            else {
-                node = EmojiEditor.pasteHtml(emoji.getHtml())
-                this.cursor_position = saveSelection()
-            }
-
-            $(this._input).trigger('change').trigger('input')
-
-            return node
+            return this.placeContentEditableEmoji(emoji)
         }
 
         const text = this.pasteInputText(emoji.getColons())
         dispatchEvents(this._input, ['change', 'input'])
         return text
+    }
+
+    placeContentEditableEmoji (emoji : Emoji) {
+        const node = emoji.getEditableFragment()
+        this._input.appendChild(node)
+        this.cursor_position = saveSelection()
+        dispatchEvents(this._input, ['change', 'input'])
+        return node
     }
 
 
@@ -92,7 +86,7 @@ export default class EmojiEditor {
      * @param text
      * @return {String}
      */
-    pasteInputText(text){
+    pasteInputText(text : string){
 
         const cursor_position = this._input.selectionStart
         const current_length  = this._input.value.length
@@ -140,11 +134,10 @@ export default class EmojiEditor {
      */
     getText() {
         if(this._is_content_editable){
-            return this._mapElement(this._input)
-                       .replace(/[\u200B-\u200D\uFEFF]/g, '')
+            return mapElement(this._input).replace(/[\u200B-\u200D\uFEFF]/g, '')
         }
 
-        return Converters.withUnified().replace_colons(this._input.value)
+        return unicodeConverter.replace_colons(this._input.value)
     }
 
     /**
@@ -167,11 +160,11 @@ export default class EmojiEditor {
      */
     _onPaste(){
         if(this._is_content_editable){
-            $(this._input).off('paste.editable').on('paste.editable', event => {
+            this._input.addEventListener('paste', (event) => {
                 event.stopPropagation()
                 event.preventDefault()
 
-                const clipboard_data = event.originalEvent.clipboardData || window.clipboardData
+                const clipboard_data = event.clipboardData || window.clipboardData
                 const pasted_data    = clipboard_data.getData('text')
                 const text           = pasteTextAtCaret(pasted_data)
                 selectElement(text)
@@ -202,51 +195,6 @@ export default class EmojiEditor {
     }
 
     /**
-     * Extracts just text and emojis from a contenteditable element
-     *
-     * @param {HTMLElement} el
-     * @private
-     */
-    _mapElement(el){
-
-        const children = Array.prototype.slice.call(el.childNodes)
-
-        return children.map(/**Text|HTMLElement*/node => {
-
-            const is_text = node instanceof Text
-            const is_html = node instanceof HTMLElement
-
-            //Return all text from text nodes
-            if(is_text){
-                return node.textContent
-            }
-            //Extract codepoints from span
-            else if(is_html && node.tagName === "SPAN"){
-                return EmojiEditor._extractSpan(node)
-            }
-
-            //Extract codepoints from an image if it was supplied
-            else if(is_html && node.tagName === "IMG"){
-                return EmojiEditor._extractImage(node)
-            }
-
-            //Convert br tags to line breaks
-            else if(is_html && node.tagName === "BR"){
-                return "\n"
-            }
-
-            //if the element is not html we're accounting for run it back through this function
-            else if(is_html){
-                return this._mapElement(node)
-            }
-            else {
-                //Unaccounted for situation - just return a blank string
-                return ""
-            }
-        }).join("")
-    }
-
-    /**
      * Tracks the cursor position and monitors the enter button in case prevent_new_line is true
      *
      * @returns {EmojiEditor}
@@ -254,12 +202,10 @@ export default class EmojiEditor {
      */
     _trackCursor(){
         if(this._is_content_editable){
-            $(this._input).off('keyup.emoji mouseup.emoji').on('keyup.emoji mouseup.emoji', () => {
-                this.cursor_position = saveSelection()
-            })
+            this._input.addEventListener('keyup', () => this.cursor_position = saveSelection())
 
-            $(this._input).off('keydown.emoji').on('keydown.emoji', event => {
-                if(event.which === 13 && this.prevent_new_line){
+            this._input.addEventListener('keydown', (event : KeyboardEvent) => {
+                if(event.key === "Enter" && this.prevent_new_line){
                     event.preventDefault()
                 }
             })
@@ -267,45 +213,7 @@ export default class EmojiEditor {
 
         return this
     }
-    /**
-     * Extracts the text content from a contenteditable and extracts any spans.
-     *
-     * @param span
-     * @returns {String}
-     * @private
-     */
-    static _extractSpan(span){
-        const $span = $(span)
-        const $inner = $span.find('.emoji-inner')
-        //If the span was not inserted by the emoji picker
-        if(!$inner.length){
-            return ""
-        }
-        //If the span was inserted by the emoji picker, get the codepoints and return the corresponding character
-        try {
-            const codepoint = $inner.data('codepoints')
-            return parseCodepoints(codepoint)
-        }
-        catch (err){
-            return ""
-        }
-    }
 
-    /**
-     * Extracts codepoints from an image if it exists.
-     *
-     * @param {HTMLElement} img
-     * @private
-     */
-    static _extractImage(img){
-        if(img.hasAttribute('data-codepoints')){
-            return parseCodepoints(
-                img.getAttribute('data-codepoints')
-            )
-        }
-
-        return ""
-    }
 
     /**
      * Replaces unified unicode inside of a contenteditable element with
@@ -313,10 +221,8 @@ export default class EmojiEditor {
      *
      */
     replaceUnified () {
-
         if(this._is_content_editable){
-            const converter = Converters.withEnvironment()
-            const html = converter.replace_unified(this._input.innerHTML)
+            const html = envConverter.replace_unified(this._input.innerHTML)
             selectElementContents(this._input)
             const node = EmojiEditor.pasteHtml(html)
             if(node){
@@ -329,16 +235,6 @@ export default class EmojiEditor {
 
     }
 
-
-    /**
-     * Determines if the environment supports unified unicode.
-     *
-     * @returns {boolean}
-     */
-    static supportsUnified (){
-        return Converters.withEnvironment().replace_mode === "unified"
-    }
-
     /**
      * Shortcut to paste html at the caret with a dummy unicode character.
      *
@@ -347,5 +243,85 @@ export default class EmojiEditor {
     static pasteHtml(html){
         return pasteHtmlAtCaret(html + "&#8203")
     }
+}
 
+/**
+ * Extracts the text content from a contenteditable and extracts any spans.
+ *
+ * @param span
+ * @returns {String}
+ * @private
+ */
+const extractEmojiFromSpan = (span : HTMLSpanElement) => {
+    const inner = span.querySelector('.emoji-inner')
+    //If the span was not inserted by the emoji picker
+    if(!inner){
+        const text = inner.textContent
+        return text || ""
+    }
+    //If the span was inserted by the emoji picker, get the codepoints and return the corresponding character
+    try {
+        const codepoint = inner.getAttribute('data-codepoints')
+        return parseStringCodepoints(codepoint)
+    }
+    catch (err){
+        return ""
+    }
+}
+
+/**
+ * Extracts codepoints from an image if it exists.
+ *
+ * @param {HTMLElement} img
+ * @private
+ */
+const extractEmojiFromImage = (img : HTMLImageElement) => {
+    if(img.hasAttribute('data-codepoints')){
+        return parseStringCodepoints(
+            img.getAttribute('data-codepoints')
+        )
+    }
+
+    return ""
+}
+
+/**
+ * Extracts just text and emojis from a contenteditable element
+ *
+ * @param {HTMLElement} el
+ */
+const mapElement = (el : HTMLElement) : string => {
+
+    const children = Array.prototype.slice.call(el.childNodes)
+
+    return children.map((node : Text|HTMLElement) => {
+
+        const is_text = node instanceof Text
+        const is_html = node instanceof HTMLElement
+
+        //Return all text from text nodes
+        if(is_text){
+            return node.textContent
+        }
+        //Extract codepoints from span
+        else if(is_html && node.tagName === "SPAN"){
+            return extractEmojiFromSpan(node)
+        }
+        //Extract codepoints from an image if it was supplied
+        else if(is_html && node.tagName === "IMG"){
+            return extractEmojiFromImage(node)
+        }
+        //Convert br tags to line breaks
+        else if(is_html && node.tagName === "BR"){
+            return "\n"
+        }
+        //if the element is not html we're accounting for run it back through this function
+        else if(is_html){
+            return mapElement(node)
+        }
+        //Unaccounted for situation - just return a blank string
+        else {
+            return ""
+        }
+    }).join("")
 }
