@@ -62,6 +62,10 @@ export default {
     //https://github.com/iamcal/emoji-data
     use_sheets : true,
 
+    filter() {
+      return true;
+    },
+
     //Events that bubble up from Emoji to EmojiPicker - DO NOT MUTATE
     //Normally I'd use pubsub here, but didn't feel like writing my own implementation
     //or bringing in another dependency for this simple use case.
