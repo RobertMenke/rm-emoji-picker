@@ -75,9 +75,14 @@ export default class EmojiEditor {
                 this.cursor_position = EmojiEditor.saveSelection();
             }
 
-            $(this._input).trigger('change').trigger('input');
+            $(this._input).trigger('change' [true]).trigger('input', [true]);
 
             return node;
+        } else {
+          const text = emoji.getCharacter();
+          const ret = this.pasteInputText(text);
+          $(this._input).trigger('change', [true]).trigger('input', [true]);
+          return ret;
         }
 
         const text = this.pasteInputText(emoji.getColons());
