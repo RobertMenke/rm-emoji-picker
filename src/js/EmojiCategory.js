@@ -4,7 +4,6 @@ import category from "./../views/category.mustache"
 
 export default class EmojiCategory {
 
-
     title : string
     icon : string
     emojis : Array<Emoji>

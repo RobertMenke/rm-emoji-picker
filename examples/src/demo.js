@@ -1,8 +1,6 @@
-import $ from "jquery";
 import EmojiPicker from "./../../dist/EmojiPicker";
 
-$(document).ready(() => {
-
+window.addEventListener('DOMContentLoaded', () => {
     const icon      = document.querySelector('.fa-smile-o');
     const container = document.getElementById('container');
     const input     = document.getElementById('text-input');
@@ -20,5 +18,5 @@ $(document).ready(() => {
 
     setInterval(() => {
         console.log(picker.getText());
-    }, 3000);
-});
+    }, 3000)
+})

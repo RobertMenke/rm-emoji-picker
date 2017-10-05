@@ -1,4 +1,4 @@
-import $ from "jquery"
+"use strict"
 import EmojiEditor from "./EmojiEditor"
 import EmojiCategory from "./EmojiCategory"
 import Tooltip from "rm-tooltip"
@@ -7,12 +7,11 @@ import defaults from "./defaults"
 import picker from "./../views/picker.mustache"
 import icon_tooltip from "./../views/icon_tooltip.mustache"
 import { detachNode, deviceIsMobile, parseHtml, replaceChildren } from "./utils"
+import { imageConverter, unicodeConverter } from "./converters"
 import "./polyfills"
 import type { config } from './defaults'
+import type Emoji from "./Emoji"
 
-"use strict"
-import { imageConverter, unicodeConverter } from "./converters"
-import Emoji from "./Emoji"
 
 
 export default class EmojiPicker {
@@ -42,16 +41,16 @@ export default class EmojiPicker {
         }
 
 
-        this.categories    = this._getCategories()
-        this.picker        = this._getPicker()
-        this.active_title  = this.picker.querySelector('#active-title')
-        this.preview_emoji = this.picker.querySelector('#emoji-large-preview')
-        this.preview_name  = this.picker.querySelector('#emoji-name')
-        this.preview_colon = this.picker.querySelector('#colon-display')
-        this.content       = this.picker.querySelector('.emoji-content')
-        this.default_footer = this.picker.querySelector('.default-content')
-        this.preview        = this.picker.querySelector('.emoji-preview')
-        this.search         = this.picker.querySelector('.search-emojis')
+        this.categories     = this._getCategories()
+        this.picker         = this._getPicker()
+        this.active_title   = this.picker.querySelector( '#active-title' )
+        this.preview_emoji  = this.picker.querySelector( '#emoji-large-preview' )
+        this.preview_name   = this.picker.querySelector( '#emoji-name' )
+        this.preview_colon  = this.picker.querySelector( '#colon-display' )
+        this.content        = this.picker.querySelector( '.emoji-content' )
+        this.default_footer = this.picker.querySelector( '.default-content' )
+        this.preview        = this.picker.querySelector( '.emoji-preview' )
+        this.search         = this.picker.querySelector( '.search-emojis' )
 
         /**
          *
@@ -173,7 +172,7 @@ export default class EmojiPicker {
      */
     openPicker(event : MouseEvent) {
 
-        const tooltip = new Tooltip(this._icon, this._container, this.$picker)
+        const tooltip = new Tooltip(this._icon, this._container, this.picker)
         tooltip.center()
         //If the developer supplied a function to position the tooltip
         if(typeof this.defaults.positioning === "function"){
@@ -213,7 +212,7 @@ export default class EmojiPicker {
             return this.editor.getText()
         }
 
-        throw new Error("Did you call this listenOn method first? The listenOn method constructs an instance of EmojiEditor and it appears to be undefined.")
+        throw new Error("Did you call the listenOn method first? The listenOn method constructs an instance of EmojiEditor and it appears to be undefined.")
     }
 
     /**
@@ -224,7 +223,7 @@ export default class EmojiPicker {
             this.editor.empty()
         }
         else{
-            console.log("Did you call the listenOn method first? The EmojiEditor instance is undefined.")
+            console.warn("Did you call the listenOn method first? The EmojiEditor instance is undefined.")
         }
     }
 
@@ -241,7 +240,7 @@ export default class EmojiPicker {
             const title = category.getAttribute('data-name')
             if(title === picker.active_category.title){
                 category.classList.add('active')
-                picker.$active_title.text(picker.active_category.title)
+                picker.active_title.textContent = picker.active_category.title
             }
             else{
                 category.classList.remove('active')
@@ -401,7 +400,7 @@ export default class EmojiPicker {
                 category.addEventListener('mouseenter', () => {
                     //On mouseenter, get the name of the category, then create the tooltip
                     const title = category.getAttribute('data-name')
-                    tooltip     = new Tooltip(category, picker.$picker.get(0), $(icon_tooltip({
+                    tooltip     = new Tooltip(category, this.picker, parseHtml(icon_tooltip({
                         text: title
                     })))
 
@@ -456,7 +455,7 @@ export default class EmojiPicker {
      * @private
      */
     _onTooltipClick(tooltip, event){
-        tooltip.setClickCallback(event, (target : HTMLElement, $tooltip) => {
+        tooltip.setClickCallback(event, (target : HTMLElement) => {
             const picker_node = target.closest('#emoji-picker')
             const is_icon = target.nodeName === this._icon.nodeName
                         && target.className === this._icon.className

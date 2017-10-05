@@ -3,19 +3,6 @@ import defaults from "./defaults"
 import { deviceIsMobile } from './utils'
 "use strict"
 
-export const unicodeConverter   = getUnicodeConverter()
-export const envConverter       = getEnvironmentConverter()
-export const imageConverter     = getImageConverter()
-const is_mobile                 = deviceIsMobile()
-
-/**
- * Tells us whether or not the environment can support
- * unicode emojis.
- *
- * @returns {boolean}
- */
-export const canSupportUnified = () : boolean => envConverter.replace_mode === "unified"
-
 const getUnicodeConverter = () : EmojiConvertor => {
     const converter = new EmojiConvertor()
     converter.init_unified()
@@ -57,3 +44,16 @@ const withSheets = (converter : EmojiConvertor, sheets) => {
 
     return converter
 }
+
+export const unicodeConverter   = getUnicodeConverter()
+export const envConverter       = getEnvironmentConverter()
+export const imageConverter     = getImageConverter()
+const is_mobile                 = deviceIsMobile()
+
+/**
+ * Tells us whether or not the environment can support
+ * unicode emojis.
+ *
+ * @returns {boolean}
+ */
+export const canSupportUnified = () : boolean => envConverter.replace_mode === "unified"

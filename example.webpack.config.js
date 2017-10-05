@@ -3,8 +3,9 @@
  */
 const webpack       = require( "webpack" )
 const glob          = require( "glob" )
+const path          = require('path')
 const build_example = true
-const is_production = true
+const is_production = false
 
 const example_entry = {
     demo: './examples/src/demo.js'
@@ -15,12 +16,12 @@ const lib_entry = {
 }
 
 const example_output = {
-    path    : './examples/build/',
+    path    : path.join(__dirname, './examples/build/'),
     filename: '[name].js'
 }
 
 const lib_output = {
-    path         : './dist/',
+    path         : path.join(__dirname, './dist/'),
     filename     : '[name].js',
     libraryTarget: "umd"
 }
@@ -48,26 +49,32 @@ const prod_plugins = [
 
 
 module.exports = {
-    entry    : build_example ? example_entry : lib_entry,
+    entry    : example_entry,
     cache    : true,
-    output   : build_example ? example_output : lib_output,
+    output   : example_output,
     //uncomment the devtool key for development so that webpack will provide a map to your source
     devtool  : is_production ? false : '#inline-source-map',
     module   : {
-        loaders: [
+        rules: [
             {
-                test  : /\.js$/,
-                loader: "babel?presets[]=es2015"
+                test   : /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use    : {
+                    loader : 'babel-loader',
+                    options: {
+                        presets: [ 'env' ],
+                        plugins: [ "transform-flow-strip-types", "transform-object-rest-spread" ]
+                    }
+                }
             },
             {
-                test  : /\.mustache$/,
-                loader: 'mustache?minify'
+                test: /\.mustache/,
+                loader: 'mustache-loader'
+                // loader: 'mustache-loader?minify'
+                // loader: 'mustache-loader?{ minify: { removeComments: false } }'
+                // loader: 'mustache-loader?noShortcut'
             }
         ]
-    },
-    //Since jQuery is a peer-dependency, we leave it here as an external
-    externals: build_example ? {} : {
-        "jquery": "jquery"
     },
     plugins  : is_production ? prod_plugins : dev_plugins
 }
