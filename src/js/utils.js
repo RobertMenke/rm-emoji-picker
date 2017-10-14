@@ -22,7 +22,7 @@ export const createLegacyEvent = (event_name : string) => {
     return event
 }
 
-export const parseHtml = (html : string) : DocumentFragment => {
+export const parseHtml = (html : string) : ?Element => {
     const fragment = document.createDocumentFragment()
     const temp = document.createElement('div')
     temp.innerHTML = html
@@ -31,7 +31,7 @@ export const parseHtml = (html : string) : DocumentFragment => {
         fragment.appendChild(child)
     }
 
-    return fragment
+    return fragment.firstElementChild
 }
 
 export const detachNode = (node : Node) => {
@@ -120,6 +120,44 @@ export const pasteHtmlAtCaret  = (html : string, select_pasted_content : boolean
 
             const el = document.createElement("div")
             el.innerHTML = html
+            let frag = document.createDocumentFragment(), node, last_node
+            while((node = el.firstChild)){
+                last_node = frag.appendChild(node)
+            }
+
+            const first_node = frag.firstChild
+            range.insertNode(frag)
+
+            //Preserve the selection
+            if(last_node){
+                range = range.cloneRange()
+                range.setStartAfter(last_node)
+                if(select_pasted_content){
+                    range.setStartBefore(first_node)
+                }
+                else{
+                    range.collapse(false)
+                }
+                sel.removeAllRanges()
+                sel.addRange(range)
+            }
+
+            return first_node
+        }
+    }
+}
+
+export const pasteHTMLElementAtCaret = (html : Element, select_pasted_content : boolean) => {
+    let sel, range
+    if(window.getSelection){
+        //IE9+ and non-IE
+        sel = window.getSelection()
+        if(sel.getRangeAt && sel.rangeCount){
+            range = sel.getRangeAt(0)
+            range.deleteContents()
+
+            const el = document.createElement("div")
+            el.appendChild(html)
             let frag = document.createDocumentFragment(), node, last_node
             while((node = el.firstChild)){
                 last_node = frag.appendChild(node)

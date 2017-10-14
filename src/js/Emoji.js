@@ -2,9 +2,11 @@ import { imageConverter, unicodeConverter } from "./converters"
 import defaults from "./defaults"
 import { getRandomColor, getCodepointsFromString } from "./utils"
 import "./polyfills"
+import type { Converters } from "./converters"
 
 export default class Emoji {
 
+    converters : Converters
     has_apple_img : boolean
     has_google_img : boolean
     has_twitter_img : boolean
@@ -19,8 +21,9 @@ export default class Emoji {
     emoji : DocumentFragment
     
 
-    constructor(data, category){
+    constructor(data, category, converters){
 
+        this.converters = converters
         /**
          * @type {Boolean}
          */
@@ -89,8 +92,8 @@ export default class Emoji {
             ._onHover()
     }
 
-    static factory(data, category, callback){
-        const emoji = new Emoji(data, category)
+    static factory(data, category, converters, callback){
+        const emoji = new Emoji(data, category, converters)
         emoji.setCallback(callback)
         return emoji
     }
@@ -110,7 +113,7 @@ export default class Emoji {
      * @returns {string}
      */
     getUnified () {
-        return unicodeConverter.replace_colons(this.getColons())
+        return this.converters.unicode.replace_colons(this.getColons())
     }
 
     /**
@@ -119,7 +122,7 @@ export default class Emoji {
      * @returns {string}
      */
     getImage () {
-        return imageConverter.replace_colons(this.getColons())
+        return this.converters.image.replace_colons(this.getColons())
     }
 
     /**
@@ -145,14 +148,14 @@ export default class Emoji {
      *
      * @return {DocumentFragment}
      */
-    getEmojiForPlatform() : DocumentFragment {
+    getEmojiForPlatform() : Element {
 
-        const emote = imageConverter.replace_colons(this.getColons())
+        const emote = this.converters.image.replace_colons(this.getColons())
 
         const fragment = this._getWrapper()
         fragment.firstChild.innerHTML = emote
 
-        return fragment
+        return fragment.firstElementChild
         // return this._getWrapper().append(emote)
     }
 
@@ -160,22 +163,18 @@ export default class Emoji {
      *
      * @returns {*}
      */
-    getPreview() : DocumentFragment {
-        const emote = imageConverter.replace_colons(this.getColons())
+    getPreview() : Element {
+        const emote = this.converters.image.replace_colons(this.getColons())
 
         const fragment = this._getPreviewWrapper()
         fragment.firstChild.innerHTML = emote
 
-        return fragment
+        return fragment.firstElementChild
         // return this._getPreviewWrapper().appendChild(emote)
     }
 
     getElement () : HTMLElement {
-        return this.emoji.firstChild
-    }
-
-    getElementCopy () : HTMLElement {
-        return this.emoji.cloneNode(true).firstChild
+        return this.emoji
     }
 
     /**
@@ -183,11 +182,8 @@ export default class Emoji {
      *
      * @returns {DocumentFragment}
      */
-    getEditableFragment() : DocumentFragment {
-        const spacer   = document.createTextNode("&#8203")
-        const fragment = this.emoji.cloneNode(true)
-        fragment.appendChild(spacer)
-        return fragment
+    getEditableFragment() : Element {
+        return this.emoji.cloneNode(true)
     }
 
     /**

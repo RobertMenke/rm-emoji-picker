@@ -7,7 +7,7 @@ import defaults from "./defaults"
 import picker from "./../views/picker.mustache"
 import icon_tooltip from "./../views/icon_tooltip.mustache"
 import { detachNode, deviceIsMobile, parseHtml, replaceChildren } from "./utils"
-import { imageConverter, unicodeConverter } from "./converters"
+import { getConverters } from "./converters"
 import "./polyfills"
 import type { config } from './defaults'
 import type Emoji from "./Emoji"
@@ -40,17 +40,17 @@ export default class EmojiPicker {
             this._callback = options
         }
 
-
-        this.categories     = this._getCategories()
-        this.picker         = this._getPicker()
-        this.active_title   = this.picker.querySelector( '#active-title' )
-        this.preview_emoji  = this.picker.querySelector( '#emoji-large-preview' )
-        this.preview_name   = this.picker.querySelector( '#emoji-name' )
-        this.preview_colon  = this.picker.querySelector( '#colon-display' )
-        this.content        = this.picker.querySelector( '.emoji-content' )
-        this.default_footer = this.picker.querySelector( '.default-content' )
-        this.preview        = this.picker.querySelector( '.emoji-preview' )
-        this.search         = this.picker.querySelector( '.search-emojis' )
+        this.converters        = getConverters( this.defaults.sheets )
+        this.categories        = this._getCategories()
+        this.picker            = this._getPicker()
+        this.active_title      = this.picker.querySelector( '#active-title' )
+        this.preview_emoji     = this.picker.querySelector( '#emoji-large-preview' )
+        this.preview_name      = this.picker.querySelector( '#emoji-name' )
+        this.preview_colon     = this.picker.querySelector( '#colon-display' )
+        this.content           = this.picker.querySelector( '.emoji-content' )
+        this.default_footer    = this.picker.querySelector( '.default-content' )
+        this.preview           = this.picker.querySelector( '.emoji-preview' )
+        this.search            = this.picker.querySelector( '.search-emojis' )
 
         /**
          *
@@ -121,7 +121,6 @@ export default class EmojiPicker {
             }
         })
 
-
         this.active_category = this.categories[0]
 
         this._onScroll()
@@ -139,11 +138,11 @@ export default class EmojiPicker {
     static render(str) {
         //If the code is running on a mobile device, don't run replace_unified
         if (deviceIsMobile) {
-            return unicodeConverter.replace_colons( str )
+            return this.converters.unicode.replace_colons( str )
         }
         //Otherwise, make an attempt to replace both colons and unified code.
-        return imageConverter.replace_unified(
-            imageConverter.replace_colons(
+        return this.converters.image.replace_unified(
+            this.converters.image.replace_colons(
                 str
             )
         )
@@ -160,7 +159,7 @@ export default class EmojiPicker {
         this._icon                = icon
         this._container           = container
         this._input               = input
-        this.editor               = new EmojiEditor(input, this.defaults.prevent_new_line)
+        this.editor               = new EmojiEditor(input, this.converters, this.defaults.prevent_new_line)
 
         this._onIconClick()
     }
@@ -233,7 +232,6 @@ export default class EmojiPicker {
      * @returns {EmojiPicker}
      */
     setActiveCategory () {
-
         const picker = this
         const categories = Array.from(this.picker.querySelectorAll('.select-category'))
         categories.forEach((category : HTMLElement) => {
@@ -282,7 +280,7 @@ export default class EmojiPicker {
      * Sets default options based on developer-supplied parameters
      *
      * @param options
-     * @private
+     *
      */
     _setDefaults(options){
         const keys = Object.keys(options)
@@ -354,7 +352,7 @@ export default class EmojiPicker {
     _getCategories() {
         const cats = this.defaults
                          .categories
-                         .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this._dispatchBubble.bind(this)))
+                         .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this.converters, this._dispatchBubble.bind(this)))
 
         cats[0].category.classList.add('first')
         return cats
@@ -363,7 +361,7 @@ export default class EmojiPicker {
     /**
      * Retrieves the emoji picker
      *
-     * @returns {jQuery|HTMLElement}
+     * @returns {HTMLElement}
      * @private
      */
     _getPicker() {
@@ -373,14 +371,13 @@ export default class EmojiPicker {
             search_icon    : this.defaults.search_icon
         }))
 
-        const element = fragment.firstElementChild
-        const contents = element.querySelector('.emoji-content')
+        const contents = fragment.querySelector('.emoji-content')
 
         this.categories.forEach(cat => {
             contents.append(cat.getMarkup())
         })
 
-        return element
+        return fragment
     }
 
     /**
@@ -474,7 +471,9 @@ export default class EmojiPicker {
      * @private
      */
     _onScroll(){
-        this.content.addEventListener('scroll', () => this.active_category = this._getActiveCategory())
+        this.content.addEventListener('scroll', () => {
+            this.active_category = this._getActiveCategory()
+        })
 
         return this
     }
@@ -522,9 +521,10 @@ export default class EmojiPicker {
 
         const scroll_top = this.content.scrollTop
         let cat          = this.categories[0]
-
         for(let i = 0; i < this.categories.length; i++){
-            if(this.categories[i].offset_top > scroll_top){
+            const offset = this.categories[i].category.offsetTop
+            //Account for the case where the DOM elements haven't been rendered and don't have a scroll top
+            if(offset > scroll_top || scroll_top === 0){
                 return cat
             }
             cat = this.categories[i]
@@ -542,6 +542,7 @@ export default class EmojiPicker {
     _updatePreview() {
 
         const emoji = this.active_emoji
+        console.log(emoji)
         if (emoji) {
             this.default_footer.style.display = "none"
             this.preview_emoji = replaceChildren(this.preview_emoji, emoji.getPreview())

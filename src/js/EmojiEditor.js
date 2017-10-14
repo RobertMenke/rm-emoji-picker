@@ -1,5 +1,4 @@
 "use strict"
-import { envConverter, unicodeConverter } from "./converters"
 import {
     selectElementContents,
     pasteHtmlAtCaret,
@@ -9,7 +8,8 @@ import {
     dispatchEvents,
     restoreSelection,
     parseStringCodepoints,
-    isContentEditable
+    isContentEditable,
+    pasteHTMLElementAtCaret
 } from "./utils"
 import Emoji from "./Emoji"
 
@@ -19,9 +19,10 @@ export default class EmojiEditor {
     /**
      *
      * @param {HTMLElement|HTMLTextAreaElement|HTMLInputElement} input
+     * @param {Converters} converters
      * @param {Boolean} prevent_new_line
      */
-    constructor(input, prevent_new_line = false){
+    constructor(input, converters, prevent_new_line = false){
         /**
          *
          * @type {HTMLElement|HTMLTextAreaElement|HTMLInputElement}
@@ -34,6 +35,8 @@ export default class EmojiEditor {
          * @private
          */
         this._is_content_editable = isContentEditable(input)
+
+        this.converters = converters
 
         /**
          *
@@ -72,8 +75,10 @@ export default class EmojiEditor {
     }
 
     placeContentEditableEmoji (emoji : Emoji) {
-        const node = emoji.getEditableFragment()
-        this._input.appendChild(node)
+        const node = emoji.getEditableFragment().firstElementChild
+        const spacer   = document.createTextNode("\u200B")
+        pasteHTMLElementAtCaret(node)
+        pasteHTMLElementAtCaret(spacer)
         this.cursor_position = saveSelection()
         dispatchEvents(this._input, ['change', 'input'])
         return node
@@ -137,7 +142,7 @@ export default class EmojiEditor {
             return mapElement(this._input).replace(/[\u200B-\u200D\uFEFF]/g, '')
         }
 
-        return unicodeConverter.replace_colons(this._input.value)
+        return this.converters.unicode.replace_colons(this._input.value)
     }
 
     /**
@@ -222,7 +227,7 @@ export default class EmojiEditor {
      */
     replaceUnified () {
         if(this._is_content_editable){
-            const html = envConverter.replace_unified(this._input.innerHTML)
+            const html = this.converters.image.replace_unified(this._input.innerHTML)
             selectElementContents(this._input)
             const node = EmojiEditor.pasteHtml(html)
             if(node){

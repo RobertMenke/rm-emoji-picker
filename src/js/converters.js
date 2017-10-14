@@ -3,6 +3,18 @@ import defaults from "./defaults"
 import { deviceIsMobile } from './utils'
 "use strict"
 
+export const getConverters = (sheets) => ({
+    unicode : getUnicodeConverter(),
+    environment : getEnvironmentConverter(),
+    image : getImageConverter(sheets)
+})
+
+export type Converters = {
+    unicode : EmojiConvertor,
+    environment : EmojiConvertor,
+    image : EmojiConvertor
+}
+
 const getUnicodeConverter = () : EmojiConvertor => {
     const converter = new EmojiConvertor()
     converter.init_unified()
@@ -19,12 +31,12 @@ const getEnvironmentConverter = () : EmojiConvertor => {
     return converter
 }
 
-const getImageConverter = () : EmojiConvertor => {
+const getImageConverter = (sheets) : EmojiConvertor => {
     const converter = new EmojiConvertor()
     converter.init_env()
     converter.replace_mode = 'css'
     converter.supports_css = true
-    return withSheets(converter)
+    return withSheets(converter, sheets)
 }
 
 /**
@@ -34,6 +46,7 @@ const getImageConverter = () : EmojiConvertor => {
  * @return EmojiConvertor
  */
 const withSheets = (converter : EmojiConvertor, sheets) => {
+    console.log(sheets)
     sheets = sheets || defaults.sheets
 
     converter.img_sets.apple.sheet    = sheets.apple
@@ -45,10 +58,10 @@ const withSheets = (converter : EmojiConvertor, sheets) => {
     return converter
 }
 
-export const unicodeConverter   = getUnicodeConverter()
-export const envConverter       = getEnvironmentConverter()
-export const imageConverter     = getImageConverter()
-const is_mobile                 = deviceIsMobile()
+// export const unicodeConverter   = getUnicodeConverter()
+// export const envConverter       = getEnvironmentConverter()
+// export const imageConverter     = getImageConverter()
+// const is_mobile                 = deviceIsMobile()
 
 /**
  * Tells us whether or not the environment can support

@@ -1,16 +1,18 @@
 import Emoji from "./Emoji"
 import { parseHtml } from './utils'
 import category from "./../views/category.mustache"
+import type { Converters } from "./converters"
 
 export default class EmojiCategory {
 
     title : string
     icon : string
     emojis : Array<Emoji>
+    converters : Converters
     category : HTMLElement
     category_title : HTMLElement
 
-    constructor(category, data){
+    constructor(category, data, converters){
 
         /**
          * @type {string}
@@ -23,14 +25,20 @@ export default class EmojiCategory {
          */
         this.icon       = category.icon
 
+
+        this.converters = converters
+
         /**
          * @type {Array<Emoji>}
          */
         this.emojis     = data.map(
-            emote => Emoji.factory(emote, this.title, this._onEvent.bind(this))
-        ).sort(
-            (a, b) => a.sort_order - b.sort_order
-        )
+            emote => Emoji.factory(
+                emote,
+                this.title,
+                this.converters,
+                this._onEvent.bind(this)
+            )
+        ).sort((a, b) => a.sort_order - b.sort_order )
 
         /**
          * Markup for the
@@ -67,11 +75,12 @@ export default class EmojiCategory {
      *
      * @param {Object} cat
      * @param {Object} data
+     * @param {Object} converters
      * @param {Function} callback
      * @returns {EmojiCategory}
      */
-    static factory(cat, data, callback){
-        const category = new EmojiCategory(cat, data)
+    static factory(cat, data, converters, callback){
+        const category = new EmojiCategory(cat, data, converters)
         category.setCallback(callback)
         return category
     }
@@ -101,15 +110,13 @@ export default class EmojiCategory {
             title : this.title
         }))
 
-        const parent_node = fragment.firstElementChild
-
-        const content = parent_node.querySelector('.category-content')
+        const content = fragment.querySelector('.category-content')
 
         this.emojis.forEach((emoji : Emoji )=> {
             content.appendChild(emoji.getElement())
         })
 
-        return parent_node
+        return fragment
     }
 
     /**
