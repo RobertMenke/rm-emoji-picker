@@ -9,4 +9,9 @@ describe("Parsing html", () => {
         expect(parsed_html.className).toBe("test")
         expect(parsed_html.firstChild.textContent).toBe("text")
     })
+
+    it("Should return null with invalid html formats", () => {
+        const mock_html = "div class=test><>span>text</span></div>"
+        expect(parseHtml(mock_html)).toBe(null)
+    })
 })
