@@ -21,12 +21,15 @@
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
+    "babel-jest": "^21.2.0",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.22.0",
     "babel-preset-env": "^1.6.0",
+    "babel-preset-flow": "^6.23.0",
     "glob": "^7.1.2",
+    "jest": "^21.2.1",
     "mustache": "^2.3.0",
     "mustache-loader": "^0.4.1",
     "url-loader": "^0.5.7",
@@ -36,7 +39,11 @@
     "start": "webpack --progress --watch",
     "start-example": "webpack --config example.webpack.config.js --progress --watch",
     "styles": "scss --watch src/scss/emojipicker.scss:dist/emojipicker.css",
-    "build": "babel --presets es2015 src/js -d dist/"
+    "build": "babel --presets es2015 src/js -d dist/",
+    "test": "jest"
   },
-  "main": "dist/EmojiPicker.js"
+  "main": "dist/EmojiPicker.js",
+  "jest": {
+    "browser": true
+  }
 }

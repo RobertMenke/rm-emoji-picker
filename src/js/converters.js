@@ -1,6 +1,5 @@
 import EmojiConvertor from "emoji-js"
 import defaults from "./defaults"
-import { deviceIsMobile } from './utils'
 "use strict"
 
 export const getConverters = (sheets) => ({

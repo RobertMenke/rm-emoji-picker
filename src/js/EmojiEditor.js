@@ -297,9 +297,9 @@ const extractEmojiFromImage = (img : HTMLImageElement) => {
  */
 const mapElement = (el : HTMLElement) : string => {
 
-    const children = Array.prototype.slice.call(el.childNodes)
+    const children = Array.from(el.childNodes)
 
-    return children.map((node : Text|HTMLElement) => {
+    return children.map((node : Text|HTMLElement) : Array<String> => {
 
         const is_text = node instanceof Text
         const is_html = node instanceof HTMLElement
@@ -309,24 +309,22 @@ const mapElement = (el : HTMLElement) : string => {
             return node.textContent
         }
         //Extract codepoints from span
-        else if(is_html && node.tagName === "SPAN"){
+        if(is_html && node.tagName === "SPAN"){
             return extractEmojiFromSpan(node)
         }
         //Extract codepoints from an image if it was supplied
-        else if(is_html && node.tagName === "IMG"){
+        if(is_html && node.tagName === "IMG"){
             return extractEmojiFromImage(node)
         }
         //Convert br tags to line breaks
-        else if(is_html && node.tagName === "BR"){
+        if(is_html && node.tagName === "BR"){
             return "\n"
         }
         //if the element is not html we're accounting for run it back through this function
-        else if(is_html){
+        if(is_html){
             return mapElement(node)
         }
         //Unaccounted for situation - just return a blank string
-        else {
-            return ""
-        }
+        return ""
     }).join("")
 }

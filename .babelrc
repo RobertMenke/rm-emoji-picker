@@ -1,0 +1,14 @@
+{
+  "env": {
+    "test": {
+      "presets": [
+        "flow",
+        ["env", {
+          "targets" : {
+            "browsers" : "ie >= 9"
+          },
+          "useBuiltIns": true
+      }]]
+    }
+  }
+}

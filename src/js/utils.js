@@ -77,6 +77,13 @@ export const getCodepointsFromString = (string : string) : Array<number> => {
     return string.split("").map(char => char.codePointAt(0))
 }
 
+/**
+ * Assert that an HTMLElement is a contenteditable element and not a HTMLTextAreaElement
+ * or HTMLInputElement
+ *
+ * @param element
+ * @return {*|boolean}
+ */
 export const isContentEditable = (element : HTMLElement) : boolean => {
     const tag = element.nodeName
     return element.isContentEditable && tag !== "INPUT" && tag !== "TEXTAREA"
@@ -234,7 +241,7 @@ export const selectElement = (element : HTMLElement, highlight : boolean = false
  * @param text
  * @returns {Text}
  */
-export const pasteTextAtCaret = (text : string) => {
+export const pasteTextAtCaret = (text : string) : Text => {
     const node = document.createTextNode(text)
     if(window.getSelection){
         const sel = window.getSelection()
@@ -257,11 +264,9 @@ export const pasteTextAtCaret = (text : string) => {
  * @param {Range} range
  */
 export const restoreSelection = (range : Range) : void => {
-    if(range){
-        if(window.getSelection){
-            const sel = window.getSelection()
-            sel.removeAllRanges()
-            sel.addRange(range)
-        }
+    if(range && window.getSelection){
+        const sel = window.getSelection()
+        sel.removeAllRanges()
+        sel.addRange(range)
     }
 }
