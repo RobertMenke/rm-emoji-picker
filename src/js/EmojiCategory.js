@@ -105,6 +105,24 @@ export default class EmojiCategory {
     }
 
     /**
+     * Allow the developer to supply a function that shows emojis based on some criteria
+     *
+     * @param callback
+     */
+    filter(callback) {
+        const emojis_to_hide = this.emojis.filter((/**Emoji*/emoji) => {
+            return !callback(emoji);
+        });
+
+        emojis_to_hide.forEach((/**Emoji*/emoji) => emoji.$emoji.hide());
+    }
+
+
+    showAllEmojis() {
+        this.emojis.forEach(emoji => emoji.$emoji.show());
+    }
+
+    /**
      * Carries an event from the Emoji to the EmojiPicker instance.
      *
      * @param action
@@ -159,7 +177,7 @@ export default class EmojiCategory {
      */
     _clearSearch() {
         this.$title.removeClass('inactive');
-        this.emojis.forEach(emoji => emoji.$emoji.show());
+        this.showAllEmojis();
 
         return this;
     }

@@ -165,6 +165,10 @@ export default class EmojiPicker {
             ._onCatClick()
             ._onSearch()
             ._setCategoryTooltips();
+
+        if(typeof this.defaults.onReady === "function") {
+            this.defaults.onReady(this.categories);
+        }
     }
 
     /**
@@ -205,10 +209,10 @@ export default class EmojiPicker {
      */
     listenOn(icon, container, input){
         this._removeOldEvents();
-        this._icon                = icon;
-        this._container           = container;
-        this._input               = input;
-        this.editor               = new EmojiEditor(input, this.defaults.prevent_new_line);
+        this._icon      = icon
+        this._container = container
+        this._input     = input
+        this.editor     = new EmojiEditor(input, this.defaults.prevent_new_line)
 
         this._onIconClick();
     }
@@ -220,7 +224,7 @@ export default class EmojiPicker {
      */
     openPicker(event) {
 
-        const tooltip = new Tooltip(this._icon, this._container, this.$picker);
+        const tooltip = new Tooltip(this._icon, this._container, this.$picker.get(0));
         tooltip.center();
         //If the developer supplied a function to position the tooltip
         if(typeof this.defaults.positioning === "function"){
@@ -246,6 +250,10 @@ export default class EmojiPicker {
 
         this._onTooltipClick(tooltip, event);
         this.$content.get(0).scrollTop = this.active_category.offset_top;
+
+        if(typeof this.defaults.onOpen === "function") {
+            this.defaults.onOpen()
+        }
 
         return this;
     }
@@ -295,6 +303,23 @@ export default class EmojiPicker {
         });
 
         return this;
+    }
+
+    /**
+     * Allow a developer to programmatically set a category by supplying a category name
+     *
+     * @param name
+     */
+    setActiveCategoryByName(name) {
+        const cat                      = this.getCategory(name)
+        console.log(cat)
+        if(!cat) {
+            throw new ReferenceError("Your call to setActiveCategoryByName in rm-emoji-picker was not supplied a valid name. Valid names are: " + this.categories.map((cat) => cat.title).join(", ").slice(0, -2))
+        }
+        this.active_category = cat
+        // this.$content.get(0).scrollTop = cat.offset_top
+        // this.setActiveCategory();
+        // this.active_category           = this._getActiveCategory()
     }
 
     /**
@@ -403,9 +428,10 @@ export default class EmojiPicker {
      * @private
      */
     _getCategories() {
-        const cats = this.defaults
-                         .categories
-                         .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this._dispatchBubble.bind(this)));
+        const cats = this
+            .defaults
+            .categories
+            .map(cat => EmojiCategory.factory(cat, emojis[cat.title], this._dispatchBubble.bind(this)));
 
         cats[0].$category.addClass('first');
         return cats;
@@ -450,9 +476,9 @@ export default class EmojiPicker {
             $cats.off('mouseenter.emoji').on('mouseenter.emoji', /**@this {HTMLElement}*/function(event){
                 //On mouseenter, get the name of the category, then create the tooltip
                 const title = this.getAttribute('data-name');
-                tooltip     = new Tooltip(this, picker.$picker.get(0), $(icon_tooltip({
+                tooltip     = new Tooltip(this, picker.$picker.get(0), icon_tooltip({
                     text: title
-                })));
+                }));
 
                 tooltip.below();
             }).off('mouseleave.emoji').on('mouseleave.emoji', () => {
