@@ -53,6 +53,13 @@ export default {
     //Callback that occurs when an emoji gets selected. You get back Emoji, EmojiCategory, Node
     callback       : undefined,
 
+    //Called whenever the picker is open
+    onOpen : undefined,
+
+    //Called when the picker has finished parsing and creating markup for each emoji. The callback will be passed
+    //an array of EmojiCategory objects
+    onReady : undefined,
+
     //When the user hovers over the top row of icons, do you want them to be shown
     //a tooltip indicating which category the icon represents?
     show_icon_tooltips : true,

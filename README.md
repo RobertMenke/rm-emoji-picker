@@ -114,6 +114,23 @@ const picker = new EmojiPicker({
             node.classList.add('emoji-image')
         }
     },
+    
+    //This optional callback is called any time the picker is opened.
+    onOpen : () => {
+        //trigger some event
+    },
+    
+    //This callback is called once the picker has fully parsed and created markup for each emoji
+    //and emoji category
+    onReady : (categories) => {
+        //example of setting a particular category as active and then filtering its contents
+        categories.setActiveCategoryByName('Activity');
+        picker.active_category.filter((/**Emoji*/emoji) => emoji.matchesSearchTerm(new RegExp("soccer")));
+        //some time later programmatically show all emojis
+        setTimeout(() => {
+            picker.active_category.showAllEmojis();
+        }, 3000)
+    },
 
     //Use sprite sheets to display image emojis rather than links to png files (faster).
     //If you want links to the png files see this repo here for examples (library I'm using):
