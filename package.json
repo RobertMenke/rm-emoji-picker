@@ -1,7 +1,7 @@
 {
   "name": "rm-emoji-picker",
   "description": "A modular emoji picker written with modern front-end in mind.",
-  "version": "0.4.00",
+  "version": "0.4.01",
   "keywords": [
     "emoji",
     "emoji-picker",
@@ -38,7 +38,7 @@
   },
   "scripts": {
     "start": "webpack --progress --watch",
-    "lib-prod": "webpack --watch --progress --mode production",
+    "lib-prod": "NODE_ENV=production webpack --progress --mode production",
     "lib-dev": "webpack --watch --progress --mode development",
     "example-prod": "webpack --config example.webpack.config.js --watch --progress --mode production",
     "example-dev": "webpack --config example.webpack.config.js --watch --progress --mode development",
