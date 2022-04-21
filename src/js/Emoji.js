@@ -3,7 +3,7 @@ import $ from "jquery";
 import defaults from "./defaults";
 import "./polyfills";
 
-export default class Emoji {
+export class Emoji {
 
     static factory(data, category, callback){
         const emoji = new Emoji(data, category);

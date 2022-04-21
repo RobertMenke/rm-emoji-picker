@@ -1,8 +1,7 @@
 import $ from "jquery";
-import EmojiPicker, { Converters } from "./../../src/js/index";
+import EmojiPicker from "./../../src/js/index";
 
 $(document).ready(() => {
-    console.log(EmojiPicker)
     const icon      = document.querySelector('.fa-smile-o');
     const container = document.getElementById('container');
     const input     = document.getElementById('text-input');

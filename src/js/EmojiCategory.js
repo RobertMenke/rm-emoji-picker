@@ -1,4 +1,4 @@
-import Emoji from "./Emoji";
+import { Emoji } from "./Emoji";
 import category from "./../views/category.mustache";
 import $ from "jquery";
 
