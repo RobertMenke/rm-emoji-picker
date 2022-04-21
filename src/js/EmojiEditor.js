@@ -3,7 +3,7 @@ import Converters from "./Converters";
 
 "use strict";
 
-export default class EmojiEditor {
+export class EmojiEditor {
 
     /**
      *

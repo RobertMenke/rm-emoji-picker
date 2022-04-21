@@ -1,7 +1,7 @@
 {
   "name": "rm-emoji-picker",
   "description": "A modular emoji picker written with modern front-end in mind.",
-  "version": "0.4.01",
+  "version": "1.0.0",
   "keywords": [
     "emoji",
     "emoji-picker",
@@ -16,7 +16,7 @@
   "repository": "https://github.com/RobertMenke/rm-emoji-picker",
   "bugs": "https://github.com/RobertMenke/rm-emoji-picker/issues",
   "dependencies": {
-    "emoji-js": "^3.2.0",
+    "emoji-js": "^3.7.0",
     "rm-tooltip": "2.0.2"
   },
   "peerDependencies": {
@@ -46,5 +46,5 @@
     "styles": "scss --watch src/scss/emojipicker.scss:dist/emojipicker.css",
     "build": "babel --presets es2015 src/js -d dist/"
   },
-  "main": "dist/EmojiPicker.js"
+  "main": "dist/index.js"
 }

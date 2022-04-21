@@ -3,7 +3,7 @@ import defaults from "./defaults";
 
 "use strict";
 
-class Converters {
+export class Converters {
 
     /**
      *
@@ -39,7 +39,6 @@ class Converters {
             converter.img_sets.apple.sheet    = sheets.apple;
             converter.img_sets.google.sheet   = sheets.google;
             converter.img_sets.twitter.sheet  = sheets.twitter;
-            converter.img_sets.emojione.sheet = sheets.emojione;
             converter.use_sheet               = true;
         });
     }

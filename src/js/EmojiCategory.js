@@ -2,7 +2,7 @@ import Emoji from "./Emoji";
 import category from "./../views/category.mustache";
 import $ from "jquery";
 
-export default class EmojiCategory {
+export class EmojiCategory {
 
     /**
      * Factory function that initializes the class with a callback
