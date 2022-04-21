@@ -1,6 +1,6 @@
 import $ from "jquery";
-import EmojiEditor from "./EmojiEditor";
-import EmojiCategory from "./EmojiCategory";
+import { EmojiEditor } from "./EmojiEditor";
+import { EmojiCategory } from "./EmojiCategory";
 import Converters from "./Converters";
 import Tooltip from "rm-tooltip";
 import emojis from "./data";
@@ -11,7 +11,7 @@ import "./polyfills";
 
 "use strict";
 
-export default class EmojiPicker {
+export class EmojiPicker {
 
     /**
      *

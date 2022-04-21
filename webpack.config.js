@@ -3,7 +3,7 @@ const is_production = process.env.NODE_ENV === "production"
 
 module.exports = {
     entry    : {
-        EmojiPicker: './src/js/EmojiPicker.js'
+        index: './src/js/index.js'
     },
     cache    : true,
     output   : {

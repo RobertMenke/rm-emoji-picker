@@ -3,7 +3,7 @@ import $ from "jquery";
 import defaults from "./defaults";
 import "./polyfills";
 
-export default class Emoji {
+export class Emoji {
 
     static factory(data, category, callback){
         const emoji = new Emoji(data, category);
@@ -164,9 +164,9 @@ export default class Emoji {
      * @return {string|jQuery}
      */
     getEmojiForPlatform(){
-
-        const emote = Converters.withEnvironment()
-                                .replace_colons(this.getColons());
+        const emote = Converters
+            .withEnvironment()
+            .replace_colons(this.getColons());
 
         return this._getWrapper().append(emote);
     }
@@ -176,8 +176,9 @@ export default class Emoji {
      * @returns {*}
      */
     getPreview(){
-        const emote = Converters.withEnvironment()
-                                .replace_colons(this.getColons());
+        const emote = Converters
+            .withEnvironment()
+            .replace_colons(this.getColons());
 
         return this._getPreviewWrapper().append(emote);
     }
